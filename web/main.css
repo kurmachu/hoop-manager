@@ -1,9 +1,88 @@
-:root {
-	font-family: 'Montserrat', sans-serif;
-}
-
 @font-face {
 	font-family: Montserrat;
 	src: url('/Montserrat-Variable.ttf');
 	font-weight: 1 999;
+}
+
+@font-face {
+	font-family: 'Material Icons';
+	font-style: normal;
+	font-weight: 400;
+	src: local('MaterialIconsOutlined-Regular'),
+	  url(/MaterialIconsOutlined-Regular.otf);
+}
+.material-icons {
+	font-family: 'Material Icons';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 1.5em;  /* Preferred icon size */
+	display: inline-block;
+	line-height: 1;
+	text-transform: none;
+	letter-spacing: normal;
+	word-wrap: normal;
+	white-space: nowrap;
+	direction: ltr;
+  
+	/* Support for all WebKit browsers. */
+	-webkit-font-smoothing: antialiased;
+	/* Support for Safari and Chrome. */
+	text-rendering: optimizeLegibility;
+  
+	/* Support for Firefox. */
+	-moz-osx-font-smoothing: grayscale;
+  
+	/* Support for IE. */
+	font-feature-settings: 'liga';
+
+	vertical-align: middle;
+  }
+
+
+:root {
+	font-family: 'Montserrat', sans-serif;
+}
+
+.coltainer {
+	margin: auto;
+	max-width: 370px;
+}
+
+.hoophouse-card {
+	border: 1px solid gray;
+	padding: 5px;
+	border-radius: 10px;
+}
+.hoop-img {
+	border-radius: 5px;
+}
+.hoophouse-card .hoop-img {
+	width: 100%;
+}
+.hoophouse-card h1 {
+	margin: 0px;
+	font-size: 1.3em;
+}
+
+.card-status-chips {
+	display: flex;
+}
+
+.status-chip {
+	color: white;
+	padding: 3px 5px;
+	border-radius: 5px;
+	display: inline-flex;
+	align-items: center;
+	margin-right: 4px;
+}
+.status-chip > .material-icons {
+	font-size: 1.2em;
+	margin-right: 3px;
+}
+.status-chip.door-open {
+	background-color: red;
+}
+.status-chip.door-auto {
+	background-color: #1F8800;
 }
