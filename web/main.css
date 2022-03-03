@@ -48,6 +48,22 @@
 	max-width: 370px;
 }
 
+.split-panel {
+	display: flex;
+}
+.split-panel.mostly-left .left, .split-panel.mostly-right .right { /* same side */
+	flex-grow: 1;
+	flex-shrink: 1;
+	min-width: 0;
+}
+.split-panel.mostly-left .right, .split-panel.mostly-right .left { /* oposite side */
+	flex-shrink: 0;
+}
+
+header h1 {
+	margin: 0.3em 0px;
+}
+
 .hoophouse-card {
 	border: 1px solid gray;
 	padding: 5px;
@@ -55,17 +71,23 @@
 }
 .hoop-img {
 	border-radius: 5px;
+	display: block;
 }
 .hoophouse-card .hoop-img {
 	width: 100%;
 }
+
 .hoophouse-card h1 {
 	margin: 0px;
+	margin-top: 5px;
 	font-size: 1.3em;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .card-status-chips {
 	display: flex;
+	flex-wrap: wrap;
 }
 
 .status-chip {
@@ -75,14 +97,28 @@
 	display: inline-flex;
 	align-items: center;
 	margin-right: 4px;
+	margin-top: 4px;
 }
 .status-chip > .material-icons {
 	font-size: 1.2em;
-	margin-right: 3px;
+	margin-right: 5px;
 }
 .status-chip.door-open {
 	background-color: red;
 }
 .status-chip.door-auto {
 	background-color: #1F8800;
+}
+
+.last-update-text {
+	font-size: 0.90em;
+	margin: 0px;
+}
+
+.hoophouse-card .readouts {
+	font-size: 1.3em;
+}
+.readout {
+	display: inline-flex;
+	align-items: center;
 }
