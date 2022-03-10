@@ -78,6 +78,7 @@ header h1 {
 }
 .hoop-img {
 	display: block;
+	min-height: 100px;
 }
 .hoop-img-cover {
 	position: absolute;
