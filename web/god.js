@@ -32,6 +32,7 @@ function updatePreviewCards(){
 		chips.append(inflateChip(hoopHouse.auto? "settings_suggest" : "gamepad",hoopHouse.auto? "Auto" : "Manual", hoopHouse.auto? "door-auto" : "door-manual"))
 		if(!hoopHouse.connected){
 			chips.append(inflateChip("wifi_off","Disconnected", "chip-disconnected"))
+			card.find('.hoop-img-cover div').text('wifi_off').fadeIn()
 		}
 		
 	})
