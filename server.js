@@ -3,9 +3,11 @@ const fs = require('fs')
 
 console.log("GOD Hoophouse management server starting")
 
+//#region configuration
 //default config
 const defaultConfig = {
-	websocketPort: 3994
+	websocketPort: 3994,
+	key: false
 }
 var config = defaultConfig
 if (fs.existsSync('server-config.json')) {
@@ -34,10 +36,15 @@ if (fs.existsSync('server-config.json')) {
 	fs.writeFileSync('server-config.json', JSON.stringify(config))
 	console.log("Default config file saved to server-config.json")
 }
-
+//#endregion
 
 const wss = new WebSocketServer({ port: config.websocketPort })
 
+//TODO load hoop houses
+var clients = []
 
+wss.on('connection', function connection(ws) {
+	
+});
 
 console.log("Websocket server started on "+wss.options.port)
