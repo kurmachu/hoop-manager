@@ -1,5 +1,6 @@
 const {WebSocket, WebSocketServer} = require('ws')
 const fs = require('fs')
+const ClientIdentifier = require('./server/ClientIdentifier')
 
 console.log("GOD Hoophouse management server starting")
 
@@ -40,11 +41,24 @@ if (fs.existsSync('server-config.json')) {
 
 const wss = new WebSocketServer({ port: config.websocketPort })
 
-//TODO load hoop houses
+//TODO actually load hoop houses
+var hoopHouses = [
+	{
+		name: "Tomatoes",
+		doorOpen: false,
+		auto: true,
+		temperature: 21,
+		humidity: 95,
+		lastUpdate: 1646938367383,
+		connected: false
+	}
+]
+
 var clients = []
 
 wss.on('connection', function connection(ws) {
-	
+	console.log("-> Incoming connection")
+	new ClientIdentifier(ws, config) //Send client off to be identified
 });
 
 console.log("Websocket server started on "+wss.options.port)
