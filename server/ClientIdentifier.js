@@ -24,4 +24,9 @@ module.exports = class ClientIdentifier extends EventEmitter {
 			this.websocket.close(1003)
 		}
 	}
+
+	eject() {
+		this.websocket.off('message', this.processMessage)
+		return this.websocket
+	}
 }

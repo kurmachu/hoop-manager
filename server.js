@@ -1,6 +1,7 @@
 const {WebSocket, WebSocketServer} = require('ws')
 const fs = require('fs')
 const ClientIdentifier = require('./server/ClientIdentifier')
+const ClientSocket = require('./server/ClientSocket')
 
 console.log("GOD Hoophouse management server starting")
 
@@ -51,6 +52,15 @@ var hoopHouses = [
 		humidity: 95,
 		lastUpdate: 1646938367383,
 		connected: false
+	},
+	{
+		name: "Tomatoes",
+		doorOpen: false,
+		auto: true,
+		temperature: 21,
+		humidity: 95,
+		lastUpdate: 1646938367383,
+		connected: false
 	}
 ]
 
@@ -58,7 +68,16 @@ var clients = []
 
 wss.on('connection', function connection(ws) {
 	console.log("-> Incoming connection")
-	new ClientIdentifier(ws, config) //Send client off to be identified
+	let identifier = new ClientIdentifier(ws, config) //Send client off to be identified
+
+	identifier.on('found-client', (clientIdentifier)=>{
+
+		let newClient = new ClientSocket(clientIdentifier.eject(), config, clients, hoopHouses)
+		let newLength = clients.push(newClient)
+		console.log(`Added to -> Clients (now at ${newLength})`)
+
+	})
+
 });
 
 console.log("Websocket server started on "+wss.options.port)
