@@ -21,7 +21,7 @@ module.exports = class ClientIdentifier extends EventEmitter {
 			this.emit('found-client', this)
 		}else if(data.type=="error"){
 			console.log("Kicking unidentified client: failed to identify -> [X]")
-			this.websocket.close(1003)
+			this.websocket.close(4002, "Failed to identify")
 		}
 	}
 

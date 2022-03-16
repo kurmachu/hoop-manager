@@ -1,14 +1,6 @@
-var houses = [{
-	name: "Tomatoes",
-	doorOpen: false,
-	auto: true,
-	temperature: 21,
-	humidity: 95,
-	lastUpdate: new Date().getTime(),
-	connected: false,
-	config: [],
-	id: "test"
-}]
+const SERVER_SOCKET_ADDRESS = "ws://localhost:3994"
+
+var houses = []
 
 function updatePreviewCards(){
 	houses.forEach((hoopHouse, i)=>{
@@ -101,3 +93,132 @@ function produceLastUpdateString(time){
 		return `A long time ago`
 	}
 }
+
+function setConnectionStatusDisplay(content, error){
+	let chip = $('.connection-status')
+	chip.stop()
+
+	if(chip.hasClass('hidden')){
+
+		chip.removeClass('error')
+		chip.children().remove()
+		chip.append(content)
+		if(error){
+			chip.addClass('error')
+		}
+		chip.removeClass('hidden')
+
+	}else{
+		chip.css('width',"")
+		chip.css('height',"")
+		let oldWidth = chip.innerWidth()
+		let oldHeight = chip.innerHeight()
+		let oldChildren = chip.children()
+		chip.children().remove()
+		chip.append(content)
+		let newWidth = chip.innerWidth()
+		let newHeight = chip.innerHeight()
+		chip.children().remove()
+		chip.append(oldChildren)
+		chip.children().fadeOut(200,()=>{
+			chip.css('width', oldWidth)
+			chip.css('height', oldHeight)
+			chip.animate({width: newWidth, height: newHeight},200,()=>{
+				chip.css('width',"")
+				chip.css('height',"")
+			})
+			chip.children().remove()
+			chip.append(content)
+			chip.children().css('display','none')
+			chip.children().fadeIn(200)
+			if(chip.hasClass('error')!=error){chip.toggleClass('error')}
+		})
+	}
+}
+
+function dismissConnectionStatusDisplay(){
+	let chip = $('.connection-status')
+	chip.addClass('hidden')
+}
+
+
+
+//#region the websocket code
+var ws = null
+var connectionFails = 0
+function tryConnect(){
+	try {
+		ws = new WebSocket(SERVER_SOCKET_ADDRESS)
+		// ws.onerror = handleInitialFail
+		ws.onclose = handleInitialKick
+		ws.onmessage = handleHandshake
+		
+	} catch (e){
+		console.error(e.stack)
+		setConnectionStatusDisplay(inflateChip("error_outline","Could not open WebSocket.<br>This is an unrecoverable error.<br>Check manual for more information.").css("white-space","initial"), true)
+	}
+}
+
+function handleInitialKick(info){
+	console.warn(info)
+	if(info.code == 4002){
+		if(info.reason == "Failed to identify"){
+			setConnectionStatusDisplay(inflateChip("block","Server has rejected this client due to a protocal issue. Ensure you are on the latest version, or refer to manual.").css("white-space","initial"), true)
+		}else if(info.reason == "Lol, what?"){
+			setConnectionStatusDisplay(inflateChip("block","Failed to understand the server. Refer to manual.").css("white-space","initial"), true)
+		}
+	}else{
+		handleInitialFail()
+	}
+}
+function handleInitialFail(){
+	connectionFails++
+	setConnectionStatusDisplay(inflateChip("cloud_off","Connection failed"), true)
+	window.setTimeout(()=>{
+		if(connectionFails < 3){
+			setConnectionStatusDisplay($('<p>Trying again...</p>'))
+			tryConnect()
+		}else{
+			setConnectionStatusDisplay(inflateChip("cloud_off","Server unavailable. Try again later.").css("white-space","initial"), true)
+		}
+		
+	},3000)
+	ws = null
+}
+
+function receiveMessage(message){
+	try {
+		return JSON.parse(message.data)
+	}catch (e){
+		console.error(e.stack)
+		return {type:"error"}
+	}
+}
+function sendMessage(object){
+	//TODO: key stuff
+	if(ws != null){
+		ws.send(JSON.stringify(object))
+	}
+}
+
+function handleHandshake(event){ //TODO: key stuff
+	let message = receiveMessage(event)
+	if(message.type=="hello"){
+		if(message.useIdentification){
+			ws.onclose = null;
+			
+			setConnectionStatusDisplay(inflateChip("vpn_key_off","Server requires a feature this client does not support. Refer to manual.").css("white-space","initial"), true)
+			ws = null
+		}else{
+			sendMessage({type:"am-client"})
+		}
+	}else if(message.type=="ok, go"){
+		setConnectionStatusDisplay(inflateChip("sync","Syncing...").css("white-space","initial"),false)
+	}else if(message.type=="error"){
+		ws.close(4002,"Lol, what?")
+	}
+}
+//#endregion
+
+setConnectionStatusDisplay($('<p>Connecting...</p>'))
+tryConnect()

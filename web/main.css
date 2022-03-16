@@ -185,12 +185,15 @@ header h1 {
 .connection-status {
 	pointer-events: initial;
 	background-color: #ffffff;
+	margin: 0px 10px;
 	margin-bottom: 15px;
 	padding: 10px 17px;
 	box-shadow: 0px 0px 15px 0px rgb(0 0 0 / 16%);
 	border-radius: calc((1ex / 2) + 20px);
 	color: #575757;
-	transition: transform 0.3s cubic-bezier(.3,.2,0,1);
+	transition: transform 0.3s cubic-bezier(.3,.2,0,1), color 0.2s, background-color 0.2s;
+	box-sizing: border-box;
+	white-space: nowrap;
 }
 .connection-status > p {
 	margin: 0px;
@@ -198,10 +201,15 @@ header h1 {
 .connection-status .status-chip {
 	margin: 0;
 	padding: 0;
-	display: block;
+	display: flex;
+	color: inherit;
+}
+.connection-status .material-icons {
+	width: 1em; /* Fun patch for unstyled cache thing! :)*/
 }
 .connection-status.error {
 	background-color: #2e2e2e;
+	color: white;
 }
 .connection-status.hidden {
 	transform: translate(0, 200%);
