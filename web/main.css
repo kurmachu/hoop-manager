@@ -165,3 +165,29 @@ header h1 {
 	align-items: center;
 	margin: 5px 5px;
 }
+
+
+
+.connection-status {
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translate(-50%, 0);
+	background-color: #ffffff;
+	margin-bottom: 15px;
+	padding: 10px;
+	box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.31);
+	border-radius: calc((1ex / 2) + 20px);
+	color: #575757
+}
+.connection-status > p {
+	margin: 0px;
+}
+.connection-status .status-chip {
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+.connection-status.error {
+	background-color: #2e2e2e;
+}
