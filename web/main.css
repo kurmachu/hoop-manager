@@ -206,6 +206,7 @@ header h1 {
 }
 .connection-status .material-icons {
 	width: 1em; /* Fun patch for unstyled cache thing! :)*/
+	margin-right: 13px;
 }
 .connection-status.error {
 	background-color: #2e2e2e;

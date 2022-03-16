@@ -154,6 +154,15 @@ var ws = null
 var connectionFails = 0
 
 function tryConnect(){
+	if(!navigator.onLine){
+		setConnectionStatusDisplay(inflateChip("wifi_off","You're offline."), true)
+		window.ononline = ()=>{
+			setConnectionStatusDisplay($('<p>Reconnecting...</p>'))
+			tryConnect()
+			window.ononline = undefined
+		}
+		return
+	}
 	try {
 		ws = new WebSocket(SERVER_SOCKET_ADDRESS)
 		// ws.onerror = handleInitialFail
