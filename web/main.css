@@ -64,6 +64,9 @@ header h1 {
 	margin: 0.3em 0px;
 }
 
+.page-title {
+	color: #575757;
+}
 .hoophouse-card {
 	box-shadow: rgb(0 0 0 / 36%) 0px 0px 6px 0px;
 	padding: 5px;
@@ -168,17 +171,26 @@ header h1 {
 
 
 
-.connection-status {
-	position: absolute;
+.connection-status-container{
+	position: fixed;
 	bottom: 0;
 	left: 50%;
 	transform: translate(-50%, 0);
+	width: 100vw;
+	display: flex;
+	align-items: center;
+    justify-content: center;
+	pointer-events: none;
+}
+.connection-status {
+	pointer-events: initial;
 	background-color: #ffffff;
 	margin-bottom: 15px;
 	padding: 10px 17px;
 	box-shadow: 0px 0px 15px 0px rgb(0 0 0 / 16%);
 	border-radius: calc((1ex / 2) + 20px);
-	color: #575757
+	color: #575757;
+	transition: transform 0.3s cubic-bezier(.3,.2,0,1);
 }
 .connection-status > p {
 	margin: 0px;
@@ -190,4 +202,7 @@ header h1 {
 }
 .connection-status.error {
 	background-color: #2e2e2e;
+}
+.connection-status.hidden {
+	transform: translate(0, 200%);
 }
