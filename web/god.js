@@ -94,7 +94,13 @@ function produceLastUpdateString(time){
 	}
 }
 
+
+var hideTimeout = -1
+
 function setConnectionStatusDisplay(content, error){
+	if(hideTimeout>=0){
+		clearTimeout(hideTimeout)
+	}
 	let chip = $('.connection-status')
 	chip.stop()
 
@@ -146,6 +152,7 @@ function dismissConnectionStatusDisplay(){
 //#region the websocket code
 var ws = null
 var connectionFails = 0
+
 function tryConnect(){
 	try {
 		ws = new WebSocket(SERVER_SOCKET_ADDRESS)
@@ -214,8 +221,56 @@ function handleHandshake(event){ //TODO: key stuff
 		}
 	}else if(message.type=="ok, go"){
 		setConnectionStatusDisplay(inflateChip("sync","Syncing...").css("white-space","initial"),false)
+		beginNormalCommunication()
 	}else if(message.type=="error"){
 		ws.close(4002,"Lol, what?")
+	}
+}
+
+function beginNormalCommunication(){
+	connectionFails = 0
+	ws.onclose = handleClose
+	ws.onmessage = handleMessage
+
+	window.setTimeout(()=>{
+		sendMessage({type:"list-all"})
+	},300)
+}
+
+function handleClose(){
+	setConnectionStatusDisplay(inflateChip("cloud_off","Disconnected"), true)
+	window.setTimeout(()=>{
+		setConnectionStatusDisplay($('<p>Reconnecting...</p>'))
+		tryConnect()
+	},3000)
+	ws = null
+}
+
+function handleMessage(event){
+	let message = receiveMessage(event)
+	console.log(message)
+	switch (message.type) {
+
+		case "house":
+			houses[message.index] = message.hoop
+			updatePreviewCards()
+			break;
+
+		case "done":
+			connectionStatusDone()
+			break;
+			
+		default:
+			break;
+	}
+}
+
+function connectionStatusDone(){
+	if(!$('.connection-status').hasClass('hidden')){
+		setConnectionStatusDisplay(inflateChip("done","Connected").css("white-space","initial"),false)
+		hideTimeout = setTimeout(()=>{
+			dismissConnectionStatusDisplay()
+		},2000)
 	}
 }
 //#endregion

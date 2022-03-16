@@ -38,7 +38,7 @@ module.exports = class ClientSocket extends EventEmitter {
 				this.hoopHouses.forEach((hoop, index) => {
 					sendTo(this.ws,{type:"house", hoop: hoop.serialize(), index: index},this.key)
 				});
-				
+				sendTo(this.ws,{type:"done"},this.key)
 				break;
 		
 			default:
