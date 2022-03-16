@@ -1,14 +1,14 @@
-var houses = [
-	{
-		name: "Tomatoes",
-		doorOpen: false,
-		auto: true,
-		temperature: 21,
-		humidity: 95,
-		lastUpdate: 1646938367383,
-		connected: false
-	}
-]
+var houses = [{
+	name: "Tomatoes",
+	doorOpen: false,
+	auto: true,
+	temperature: 21,
+	humidity: 95,
+	lastUpdate: new Date().getTime(),
+	connected: false,
+	config: [],
+	id: "test"
+}]
 
 function updatePreviewCards(){
 	houses.forEach((hoopHouse, i)=>{
@@ -38,6 +38,11 @@ function updatePreviewCards(){
 	})
 }
 
+window.setTimeout(()=>{
+	updatePreviewCards()
+},30*1000)
+updatePreviewCards()
+
 function inflatePreviewCard(){
 	let newCard = $(`<section class="hoophouse-card">
 						<div class="hoop-img-container">
@@ -50,18 +55,19 @@ function inflatePreviewCard(){
 							<div class="split-panel mostly-left">
 								<div class="left">
 									<h1>...</h1>
-									<div class="card-status-chips">
-										<p>...</p>
-									</div>
 								</div>
 								<div class="right" style="text-align: end;">
 									<div class="readouts">
 										<div class="readout"><span class="material-icons">thermostat</span><span class="temp">..</span></div>
 										<div class="readout"><span class="material-icons">water_drop</span><span class="humid">..</span></div>
 									</div>
-									<p class="last-update-text">Updating...</p>
+									
 								</div>
 							</div>
+							<div class="card-status-chips">
+								<p>...</p>
+							</div>
+							<p class="last-update-text">Updating...</p>
 						</div>
 					</section>`)
 	$('.page.overview > .coltainer').append(newCard)

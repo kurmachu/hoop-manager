@@ -15,7 +15,7 @@
 	font-family: 'Material Icons';
 	font-weight: normal;
 	font-style: normal;
-	font-size: 1.5em;  /* Preferred icon size */
+	font-size: 1.2em;
 	display: inline-block;
 	line-height: 1;
 	text-transform: none;
@@ -109,6 +109,10 @@ header h1 {
 	overflow: hidden;
 }
 
+.card-info {
+	padding: 0px 5px;
+}
+
 .card-status-chips {
 	display: flex;
 	flex-wrap: wrap;
@@ -125,28 +129,28 @@ header h1 {
 }
 
 .status-chip > .material-icons {
-	font-size: 1.2em;
 	margin-right: 5px;
 }
 .status-chip.door-open {
-	background-color: rgb(18, 238, 18);
+	background-color: #31A8B8;
 }
 .status-chip.door-auto {
-	background-color: #1F8800;
+	background-color: #62aa4d;
 }
 .status-chip.door-manual {
-	background-color: rgb(49, 49, 49);
+	background-color: #858585;
 }
 .status-chip.door-closed {
-	background-color: orange;
+	background-color: #8a63a8;
 }
 .status-chip.chip-disconnected {
-	background-color: red;
+	background-color: #de5151;
 }
 
 .last-update-text {
 	font-size: 0.90em;
-	margin: 0px;
+	margin: 4px 0px;
+    margin-top: 6px;
 }
 
 .hoophouse-card .readouts {
@@ -159,5 +163,5 @@ header h1 {
 .readout {
 	display: inline-flex;
 	align-items: center;
-	margin: 5px 3px;
+	margin: 5px 5px;
 }
