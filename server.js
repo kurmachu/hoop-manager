@@ -2,6 +2,8 @@ const {WebSocket, WebSocketServer} = require('ws')
 const fs = require('fs')
 const ClientIdentifier = require('./server/ClientIdentifier')
 const ClientSocket = require('./server/ClientSocket')
+const HoopHouse = require('./server/HoopHouse')
+const { randomUUID } = require('crypto');
 
 console.log("GOD Hoophouse management server starting")
 
@@ -16,7 +18,7 @@ if (fs.existsSync('server-config.json')) {
 	try {
 		config = JSON.parse(fs.readFileSync('server-config.json'))
 		console.log("Config parsed, validating...")
-		//check that the config has all keys defualtConfig has
+		//check that the config has all keys defaultConfig has
 		for (const key in defaultConfig) {
 			if (!Object.hasOwnProperty.call(config, key)) {
 				throw new Error("Key missing! " + key)
@@ -44,24 +46,17 @@ const wss = new WebSocketServer({ port: config.websocketPort })
 
 //TODO actually load hoop houses
 var hoopHouses = [
-	{
+	new HoopHouse({
 		name: "Tomatoes",
 		doorOpen: false,
 		auto: true,
 		temperature: 21,
 		humidity: 95,
 		lastUpdate: 1646938367383,
-		connected: false
-	},
-	{
-		name: "Tomatoes",
-		doorOpen: false,
-		auto: true,
-		temperature: 21,
-		humidity: 95,
-		lastUpdate: 1646938367383,
-		connected: false
-	}
+		connected: false,
+		config: [],
+		id: "test"
+	}, config)
 ]
 
 var clients = []

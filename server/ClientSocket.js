@@ -23,13 +23,20 @@ module.exports = class ClientSocket extends EventEmitter {
 		sendTo(websocket, {type:"ok, go"}, this.key) //Tell client it's okay to start asking for things
 	}
 
+	hookIntoAll(){
+
+	}
+
+
+
+
 	processMessage = (data) => { //arrow function used to avoid "this" change
 		let message = decodeFrom(data, this.key)
 		
 		switch (message.type) {
 			case "list-all":
 				this.hoopHouses.forEach((hoop, index) => {
-					sendTo(this.ws,{hoop: hoop, index: index},this.key)
+					sendTo(this.ws,{type:"house", hoop: hoop.serialize(), index: index},this.key)
 				});
 				
 				break;

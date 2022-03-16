@@ -109,3 +109,4 @@ dist
 # GOD-specific ignores:
 server-config.json
 broken-server-config.json
+save/
