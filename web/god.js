@@ -226,7 +226,7 @@ function handleHandshake(event){ //TODO: key stuff
 			setConnectionStatusDisplay(inflateChip("vpn_key_off","Server requires a feature this client does not support. Refer to manual.").css("white-space","initial"), true)
 			ws = null
 		}else{
-			sendMessage({type:"am-client"})
+			sendMessage({type:"am client"})
 		}
 	}else if(message.type=="ok, go"){
 		setConnectionStatusDisplay(inflateChip("sync","Syncing...").css("white-space","initial"),false)
@@ -242,7 +242,7 @@ function beginNormalCommunication(){
 	ws.onmessage = handleMessage
 
 	window.setTimeout(()=>{
-		sendMessage({type:"list-all"})
+		sendMessage({type:"list all"})
 	},300)
 }
 
@@ -269,6 +269,11 @@ function handleMessage(event){
 			connectionStatusDone()
 			break;
 			
+		case "please reload":
+			ws.onclose = undefined
+			ws.close()
+			setConnectionStatusDisplay(inflateChip("refresh","Please refresh").css("white-space","initial"), true)
+			break;
 		default:
 			break;
 	}
@@ -276,7 +281,7 @@ function handleMessage(event){
 
 function connectionStatusDone(){
 	if(!$('.connection-status').hasClass('hidden')){
-		setConnectionStatusDisplay(inflateChip("done","Connected").css("white-space","initial"),false)
+		setConnectionStatusDisplay(inflateChip("done","Connected"),false)
 		hideTimeout = setTimeout(()=>{
 			dismissConnectionStatusDisplay()
 		},2000)

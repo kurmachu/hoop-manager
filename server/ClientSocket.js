@@ -21,20 +21,22 @@ module.exports = class ClientSocket extends EventEmitter {
 		this.ws.on('error', this.onEnd)
 
 		sendTo(websocket, {type:"ok, go"}, this.key) //Tell client it's okay to start asking for things
+		this.hookIntoAll()
 	}
 
 	hookIntoAll(){
-
+		this.hoopHouses.forEach((hoop)=>{
+			hoop.on('changed',()=>{
+				sendTo(this.ws,{type:"house", hoop: hoop.serialize(), index: this.hoopHouses.indexOf(hoop)},this.key)
+			})
+		})
 	}
-
-
-
 
 	processMessage = (data) => { //arrow function used to avoid "this" change
 		let message = decodeFrom(data, this.key)
 		
 		switch (message.type) {
-			case "list-all":
+			case "list all":
 				this.hoopHouses.forEach((hoop, index) => {
 					sendTo(this.ws,{type:"house", hoop: hoop.serialize(), index: index},this.key)
 				});
@@ -55,6 +57,11 @@ module.exports = class ClientSocket extends EventEmitter {
 			this.clients.splice(this.clients.indexOf(this), 1)
 			console.log(`Clients (now at ${this.clients.length}) -> [X]`)
 		}
+	}
+
+
+	requestRefresh(){
+		sendTo(this.ws,{type:"please reload"},this.key)
 	}
 
 }

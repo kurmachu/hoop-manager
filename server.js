@@ -4,6 +4,7 @@ const ClientIdentifier = require('./server/ClientIdentifier')
 const ClientSocket = require('./server/ClientSocket')
 const HoopHouse = require('./server/HoopHouse')
 const { randomUUID } = require('crypto');
+const { getSystemErrorMap } = require('util')
 
 console.log("GOD Hoophouse management server starting")
 
@@ -11,7 +12,10 @@ console.log("GOD Hoophouse management server starting")
 //default config
 const defaultConfig = {
 	websocketPort: 3994,
-	key: false
+	key: false,
+	syncHousesEveryMS: 10000,
+	syncHousesEveryWatchedMS: 5000,
+	offlineRecordTempEveryMS: 20*60*1000,
 }
 var config = defaultConfig
 if (fs.existsSync('server-config.json')) {
@@ -45,19 +49,48 @@ if (fs.existsSync('server-config.json')) {
 const wss = new WebSocketServer({ port: config.websocketPort })
 
 //TODO actually load hoop houses
-var hoopHouses = [
-	new HoopHouse({
-		name: "Tomatoes",
-		doorOpen: false,
-		auto: true,
-		temperature: 21,
-		humidity: 95,
-		lastUpdate: 1646938367383,
-		connected: false,
-		config: [],
-		id: "test"
-	}, config)
-]
+// var hoopHouses = [
+// 	new HoopHouse({
+// 		name: "Tomatoes",
+// 		doorOpen: false,
+// 		auto: true,
+// 		temperature: 21,
+// 		humidity: 95,
+// 		lastUpdate: 1646938367383,
+// 		connected: false,
+// 		config: [],
+// 		id: "test"
+// 	}, config)
+// ]
+var hoopHouses = []
+if (fs.existsSync('./save/houses.json')) {
+	console.log("Loading houses...")
+	try {
+		let hoopHouseInfo = JSON.parse(fs.readFileSync('./save/houses.json'))
+		hoopHouseInfo.forEach((house)=>{
+			hoopHouses.push(new HoopHouse(house, config))
+			console.log("Loaded " + house.name)
+		})
+	} catch (error) {
+		console.error("EXCEPTION THROWN WHILE LOADING HOOP HOUSES! THIS IS VERY BAD!")
+		console.error(error.stack)
+		console.error("This error is unreconverable; possible data corruption. Consult manual immediately.")
+		process.exit(1)
+	}
+}else{
+	console.log("House save file not found, skipping...")
+}
+
+function saveHouses() {
+	let hoopHouseInfo = []
+	hoopHouses.forEach((house, i)=>{
+		hoopHouseInfo[i] = house.serialize(true)
+	})
+	if(!fs.existsSync('./save/')){
+		fs.mkdirSync('./save/')
+	}
+	fs.writeFileSync('./save/houses.json', JSON.stringify(hoopHouseInfo))
+}
 
 var clients = []
 
@@ -71,6 +104,33 @@ wss.on('connection', function connection(ws) {
 		let newLength = clients.push(newClient)
 		console.log(`Added to -> Clients (now at ${newLength})`)
 
+	})
+
+	identifier.on('found-new-hoop', (clientIdentifier, initialFrame)=>{
+
+		let newID = randomUUID()
+		let newHoophouse = new HoopHouse({
+			name: "Unnamed",
+			doorOpen: initialFrame.doorOpen,
+			auto: false,
+			temperature: initialFrame.temperature,
+			humidity: initialFrame.humidity,
+			lastUpdate: new Date().getTime(),
+			config: {
+				mintemp: 0,
+				maxtemp: 0,
+				minhumid: 0,
+				maxhumid: 0
+			},
+			id: newID
+		}, config)
+		newHoophouse.attatchWS(clientIdentifier.eject())
+		hoopHouses.push(newHoophouse)
+		saveHouses()
+		clients.forEach((client)=>{
+			client.requestRefresh()
+		})
+		console.log("Welcomed new hoop house -> "+newID)
 	})
 
 });
