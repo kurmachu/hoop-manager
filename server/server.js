@@ -132,6 +132,13 @@ wss.on('connection', function connection(ws) {
 		console.log("Welcomed new hoop house -> "+newID)
 	})
 
+	identifier.on('found-hoop', (clientIdentifier, id)=>{
+		for (const hoopHouse of hoopHouses) {
+			if(hoopHouse.id == id){
+				console.log(hoopHouse)
+			}
+		}
+	})
 });
 
 console.log("Websocket server started on "+wss.options.port)

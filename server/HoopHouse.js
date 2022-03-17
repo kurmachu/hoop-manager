@@ -72,9 +72,11 @@ module.exports = class ClientSocket extends EventEmitter {
 	}
 
 	attatchWS(ws){
+		console.log(this.name+" Connected")
 		this.ws = ws
 		this.ws.on('close', this.deattatchWS)
 		this.syncToClient()
+		this.notifyChanged()
 	}
 
 	deattatchWS = () => {

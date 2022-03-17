@@ -25,7 +25,7 @@ module.exports = class ClientIdentifier extends EventEmitter {
 				console.log("Kicking supposed hoophouse: failed to provide id -> [X]")
 			}
 			console.log("Identified hoophouse connection")
-			this.emit('found-hoop', this)
+			this.emit('found-hoop', this, data.id)
 		}else if(data.type=="am new hoop"){
 			if(!data.initialFrame){
 				console.log("Kicking supposed new hoophouse: failed to provide initial frame -> [X]")
