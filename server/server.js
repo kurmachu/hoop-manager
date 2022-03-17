@@ -1,10 +1,9 @@
 const {WebSocket, WebSocketServer} = require('ws')
 const fs = require('fs')
-const ClientIdentifier = require('./server/ClientIdentifier')
-const ClientSocket = require('./server/ClientSocket')
-const HoopHouse = require('./server/HoopHouse')
+const ClientIdentifier = require('./ClientIdentifier')
+const ClientSocket = require('./ClientSocket')
+const HoopHouse = require('./HoopHouse')
 const { randomUUID } = require('crypto');
-const { getSystemErrorMap } = require('util')
 
 console.log("GOD Hoophouse management server starting")
 

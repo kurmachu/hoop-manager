@@ -1,9 +1,8 @@
 {
-  "name": "es-doors",
+  "name": "es-doors-server",
   "version": "1.0.0",
-  "description": "Glorified Opening of Doors",
+  "description": "GOD Hoophouse management server",
   "scripts": {
-    "client": "node client.js",
     "server": "node server.js"
   },
   "repository": {
