@@ -20,6 +20,10 @@ module.exports = class ClientIdentifier extends EventEmitter {
 			console.log("Identified client connection")
 			this.emit('found-client', this)
 		}else if(data.type=="am hoop"){
+			if(!data.id){
+				this.websocket.close(4002, "Okay but which one")
+				console.log("Kicking supposed hoophouse: failed to provide id -> [X]")
+			}
 			console.log("Identified hoophouse connection")
 			this.emit('found-hoop', this)
 		}else if(data.type=="am new hoop"){
