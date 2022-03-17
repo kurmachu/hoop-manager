@@ -25,7 +25,7 @@ module.exports = class ClientIdentifier extends EventEmitter {
 		}else if(data.type=="am new hoop"){
 			if(!data.initialFrame){
 				console.log("Kicking supposed new hoophouse: failed to provide initial frame -> [X]")
-				this.websocket.close(4002, "frame missing")
+				this.websocket.close(4002, "Initial frame missing")
 				return
 			}
 			console.log("Identified new hoophouse connection")
