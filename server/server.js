@@ -135,10 +135,17 @@ wss.on('connection', function connection(ws) {
 	identifier.on('found-hoop', (clientIdentifier, id)=>{
 		for (const hoopHouse of hoopHouses) {
 			if(hoopHouse.id == id){
-				console.log(hoopHouse)
+				hoopHouse.attatchWS(clientIdentifier.eject())
+				return
 			}
 		}
+		//We didn't find a hoophouse
+		let ws = clientIdentifier.eject()
+		console.log(`Kicking unknown hoophouse ID ${id} -> [X]`)
+		ws.send(JSON.stringify({type: "you don't exist"}))
+		ws.close()
 	})
+
 });
 
 console.log("Websocket server started on "+wss.options.port)

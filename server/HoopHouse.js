@@ -72,6 +72,11 @@ module.exports = class ClientSocket extends EventEmitter {
 	}
 
 	attatchWS(ws){
+		if(this.ws!=null){
+			console.warn(this.name + " has attemted to connect twice! Something is probably incorrectly configured. Refer to manual. This connection attempt will now probably fail.")
+			this.deattatchWS()
+
+		}
 		console.log(this.name+" Connected")
 		this.ws = ws
 		this.ws.on('close', this.deattatchWS)
@@ -81,9 +86,13 @@ module.exports = class ClientSocket extends EventEmitter {
 
 	deattatchWS = () => {
 		console.log(this.name+" Disconnected")
-		this.ws.close()
-		this.ws = null
-		this.notifyChanged()
+		try{
+			this.ws.close()
+			this.ws = null
+			this.notifyChanged()
+		}catch{
+
+		}
 	}
 
 	syncToClient() {
