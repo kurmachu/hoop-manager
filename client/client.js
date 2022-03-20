@@ -63,6 +63,7 @@ function saveState() {
 
 var ws = null
 var retryTime = 10*1000
+var syncTimer = -1
 
 if(save.state=="first"){
 	console.log("We don't have a config or ID, so we cannot act yet. We will now try to register with the server at " + config.websocketURL + " to retreive information.")
@@ -79,6 +80,27 @@ function beginManagement(){
 	//TODO management
 }
 
+function rescheduleSync(){
+	if(syncTimer > 0){
+		console.log("Unsheduling sync")
+		clearInterval(syncTimer)
+		syncTimer = 0
+	}
+	if(ws != null){
+		console.log(`Sync scheduled for every ${save.syncTime}ms`)
+		syncTimer = setInterval(syncToServer, save.syncTime)
+	}
+}
+
+function syncToServer(){
+	console.log("Performing server sync...")
+	sendTo(ws,{
+		type: "sync",
+		doorOpen: getIsDoorOpen(),
+		temperature: getTemperature(),
+		humidity: getHumidity()
+	}, config.key)
+}
 
 function beginCommunication(){
 	if(ws != null){
@@ -108,6 +130,7 @@ function beginCommunication(){
 	ws.onclose = ()=>{
 		console.log(`Connection to server closed. Will retry in ${retryTime}ms.`)
 		ws = null
+		rescheduleSync()
 		setTimeout(() => {
 			retryTime = retryTime* 1.2
 			if(retryTime > 30*60*1000){
@@ -140,12 +163,16 @@ function beginCommunication(){
 				save.auto = message.auto
 				save.config = message.config
 				save.id = message.id
+				save.syncTime = message.syncHousesEveryMS
+				save.syncTimeWatched = message.syncHousesEveryWatchedMS
+				save.syncTimeOffline = message.offlineRecordTempEveryMS
 				if(save.state=="first"){//this is our first sync
 					console.log("Successfully registered. Our ID is " + save.id)
 					beginManagement()
 				}
 				save.state = "ok"
 				saveState()
+				rescheduleSync()
 				break;
 		
 			default:

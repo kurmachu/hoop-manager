@@ -80,6 +80,7 @@ module.exports = class ClientSocket extends EventEmitter {
 		console.log(this.name+" Connected")
 		this.ws = ws
 		this.ws.on('close', this.deattatchWS)
+		this.ws.on('message', this.processMessage)
 		this.syncToClient()
 		this.notifyChanged()
 	}
@@ -95,9 +96,21 @@ module.exports = class ClientSocket extends EventEmitter {
 		}
 	}
 
+	processMessage = (data) => {
+		let message = decodeFrom(data, this.key)
+		if(message.type=="sync"){
+			console.log(this.name + " has sent information")
+			this.humidity = message.humidity,
+			this.temperature = message.temperature,
+			this.doorOpen = message.doorOpen,
+			this.lastUpdate = new Date().getTime()
+			this.notifyChanged()
+		}
+	}
+
 	syncToClient() {
 		if(this.ws!=null){
-			sendTo(this.ws,{type:"sync", auto: this.auto, config: this.config, id: this.id, syncHousesEveryMS: this.config.syncHousesEveryMS, syncHousesEveryWatchedMS: this.config.syncHousesEveryWatchedMS, offlineRecordTempEveryMS: this.config.offlineRecordTempEveryMS,},this.key)
+			sendTo(this.ws,{type:"sync", auto: this.auto, config: this.config, id: this.id, syncHousesEveryMS: this.serverConfig.syncHousesEveryMS, syncHousesEveryWatchedMS: this.serverConfig.syncHousesEveryWatchedMS, offlineRecordTempEveryMS: this.serverConfig.offlineRecordTempEveryMS},this.key)
 		}
 	}
 }

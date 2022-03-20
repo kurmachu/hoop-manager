@@ -12,7 +12,7 @@ console.log("GOD Hoophouse management server starting")
 const defaultConfig = {
 	websocketPort: 3994,
 	key: false,
-	syncHousesEveryMS: 10000,
+	syncHousesEveryMS: 60000,
 	syncHousesEveryWatchedMS: 5000,
 	offlineRecordTempEveryMS: 20*60*1000,
 }
@@ -79,6 +79,11 @@ if (fs.existsSync('./save/houses.json')) {
 }else{
 	console.log("House save file not found, skipping...")
 }
+hoopHouses.forEach((house)=>{
+	house.on('changed', ()=>{
+		saveHouses()
+	})
+})
 
 function saveHouses() {
 	let hoopHouseInfo = []
