@@ -2,7 +2,14 @@ module.exports.sendTo = function(ws, data, key){
 	if(key){
 		throw new Error("Key use is currently unimplemented!")
 	}else{
-		ws.send(JSON.stringify(data))
+		try {
+			ws.send(JSON.stringify(data))
+		}
+		catch (e){
+			console.error("Failed to send message")
+			console.error(data)
+			console.error(e.stack)
+		}
 	}
 }
 

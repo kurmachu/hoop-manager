@@ -44,6 +44,13 @@ module.exports = class ClientSocket extends EventEmitter {
 				});
 				sendTo(this.ws,{type:"done"},this.key)
 				break;
+
+			case "watching":
+				this.watchIndex(message.index)
+				break;
+
+			case "not watching":
+				this.unwatch()
 		
 			default:
 				break;
@@ -53,6 +60,7 @@ module.exports = class ClientSocket extends EventEmitter {
 	onEnd = () =>{
 		this.emit('detatch', this)
 
+		this.unwatch()
 		let index = this.clients.indexOf(this)
 		console.log("Client detatched.")
 		if(index >= 0){
@@ -69,4 +77,25 @@ module.exports = class ClientSocket extends EventEmitter {
 		sendTo(this.ws,{type:"please reload"},this.key)
 	}
 
+	watchedID = -1
+	watchIndex(index){
+		this.unwatch()
+		this.hoopHouses[index].on('watchSync', this.onWatch)
+		this.hoopHouses[index].updateIsBeingWatched()
+		this.watchedID = index
+		console.log("Client now watching "+ this.hoopHouses[this.watchedID].name)
+	}
+
+	onWatch = (house)=>{
+		sendTo(this.ws,{type:"house", hoop: house.serialize(), index: this.watchedID},this.key)
+	}
+
+	unwatch(){
+		if(this.watchedID>=0){
+			console.log("Client unwatching "+ this.hoopHouses[this.watchedID].name)
+			this.hoopHouses[this.watchedID].off('watchSync',this.onWatch)
+			this.hoopHouses[this.watchedID].updateIsBeingWatched()
+			this.watchedID = -1
+		}
+	}
 }

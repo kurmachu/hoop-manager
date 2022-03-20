@@ -258,6 +258,7 @@ body {
 	font-size: inherit;
 	border-radius: 5px;
 	box-shadow: 0px 0px 16px #ffffff75 inset;
+	transition: background-color 0.3s;
 }
 .action-buttons > .door-button{
 	flex-grow: 1;
@@ -278,4 +279,8 @@ body {
 }
 .log-view p {
 	margin: 0px;
+}
+
+.auto-status {
+	font-weight: bold;
 }

@@ -64,6 +64,7 @@ function saveState() {
 var ws = null
 var retryTime = 10*1000
 var syncTimer = -1
+var watchSyncTimer = -1
 
 if(save.state=="first"){
 	console.log("We don't have a config or ID, so we cannot act yet. We will now try to register with the server at " + config.websocketURL + " to retreive information.")
@@ -92,13 +93,14 @@ function rescheduleSync(){
 	}
 }
 
-function syncToServer(){
+function syncToServer(forWatch){
 	console.log("Performing server sync...")
 	sendTo(ws,{
 		type: "sync",
 		doorOpen: getIsDoorOpen(),
 		temperature: getTemperature(),
-		humidity: getHumidity()
+		humidity: getHumidity(),
+		forWatch: forWatch
 	}, config.key)
 }
 
@@ -129,6 +131,11 @@ function beginCommunication(){
 	}
 	ws.onclose = ()=>{
 		console.log(`Connection to server closed. Will retry in ${retryTime}ms.`)
+		if(watchSyncTimer>=0){
+			console.log("Stopping watched sync rotine.")
+			clearTimeout(watchSyncTimer)
+			watchSyncTimer = -1
+		}
 		ws = null
 		rescheduleSync()
 		setTimeout(() => {
@@ -173,8 +180,26 @@ function beginCommunication(){
 				save.state = "ok"
 				saveState()
 				rescheduleSync()
+				syncToServer()
 				break;
 		
+			case 'watched?': 
+				if(message.isWatched){
+					if(watchSyncTimer<0){
+						console.log("Starting watched sync rotine.")
+						watchSyncTimer = setInterval(()=>{
+							syncToServer(true)
+						}, save.syncTimeWatched)
+					}
+				}else{
+					if(watchSyncTimer>=0){
+						console.log("Stopping watched sync rotine.")
+						clearTimeout(watchSyncTimer)
+						watchSyncTimer = -1
+					}
+				}
+				break;
+
 			default:
 				console.log("Unhandled type received from server:")
 				console.log(message)
@@ -185,12 +210,15 @@ function beginCommunication(){
 
 //#region information gathering
 function getIsDoorOpen(){
-	return false //TODO ACTUALLY GET VALUE
+	//return false //TODO ACTUALLY GET VALUE
+	return (Math.random()<0.5)
 }
 function getTemperature(){
-	return 27 //TODO ACTUALLY GET VALUE
+	//return 27 //TODO ACTUALLY GET VALUE
+	return Math.round(Math.random()*100)
 }
 function getHumidity(){
-	return 99 //TODO ACTUALLY GET VALUE
+	//return 99 //TODO ACTUALLY GET VALUE
+	return Math.round(Math.random()*100)
 }
 //#endregion

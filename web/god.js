@@ -152,11 +152,15 @@ var watchedID = -1
 
 function previewCardClick(){
 	watchedID = $(this).index('.hoophouse-card')
+	//tell the server we're watching
+	sendMessage({type:"watching", index: watchedID})
 	updateWatch()
 	toDetailsPage()
 }
 
 function exitWatch(){
+	sendMessage({type:"not watching"})
+	watchedID = -1
 	toMainPage()
 }
 
@@ -166,6 +170,16 @@ function updateWatch(){
 	$('.page.details .humid').text(house.humidity)
 
 	$('.page.details h1').text(house.name)
+
+	$('.door-button').removeClass('door-closed door-open')
+	$('.door-button').addClass(house.doorOpen? 'door-open' : 'door-closed')
+	$('.door-button').children().remove()
+	$('.door-button').append(inflateChip("sensor_door", house.doorOpen? 'Open' : 'Closed').css('justify-content', 'center'))
+
+	$('.auto-button').removeClass('door-auto door-manual')
+	$('.auto-button').addClass(house.auto? 'door-auto' : 'door-manual')
+
+	$('.auto-status').text(house.auto? "ON" : "OFF")
 }
 
 //#region page stuff
@@ -283,6 +297,9 @@ function beginNormalCommunication(){
 
 	window.setTimeout(()=>{
 		sendMessage({type:"list all"})
+		if(watchedID>=0){
+			sendMessage({type:"watching", index: watchedID})
+		}
 	},300)
 }
 
@@ -303,6 +320,9 @@ function handleMessage(event){
 		case "house":
 			houses[message.index] = message.hoop
 			updatePreviewCards()
+			if(message.index == watchedID) {
+				updateWatch()
+			}
 			break;
 
 		case "done":

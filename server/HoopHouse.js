@@ -83,6 +83,7 @@ module.exports = class ClientSocket extends EventEmitter {
 		this.ws.on('message', this.processMessage)
 		this.syncToClient()
 		this.notifyChanged()
+		this.updateIsBeingWatched()
 	}
 
 	deattatchWS = () => {
@@ -104,13 +105,23 @@ module.exports = class ClientSocket extends EventEmitter {
 			this.temperature = message.temperature,
 			this.doorOpen = message.doorOpen,
 			this.lastUpdate = new Date().getTime()
-			this.notifyChanged()
+			if(message.forWatch){
+				this.emit('watchSync', this)
+			}else{
+				this.notifyChanged()
+			}
 		}
 	}
 
 	syncToClient() {
 		if(this.ws!=null){
 			sendTo(this.ws,{type:"sync", auto: this.auto, config: this.config, id: this.id, syncHousesEveryMS: this.serverConfig.syncHousesEveryMS, syncHousesEveryWatchedMS: this.serverConfig.syncHousesEveryWatchedMS, offlineRecordTempEveryMS: this.serverConfig.offlineRecordTempEveryMS},this.key)
+		}
+	}
+
+	updateIsBeingWatched() {
+		if(this.ws!=null){
+			sendTo(this.ws,{type:"watched?", isWatched: this.listenerCount('watchSync')},this.serverConfig.key)
 		}
 	}
 }
