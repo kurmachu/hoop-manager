@@ -110,3 +110,5 @@ dist
 server-config.json
 broken-server-config.json
 save/
+config.json
+save.json

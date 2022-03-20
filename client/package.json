@@ -1,0 +1,21 @@
+{
+  "name": "es-doors-client",
+  "version": "1.0.0",
+  "description": "GOD Hoophouse client software",
+  "scripts": {
+    "client": "node client.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kurmachu/god.git"
+  },
+  "author": "T18Hoop",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kurmachu/god/issues"
+  },
+  "homepage": "https://github.com/kurmachu/god#readme",
+  "dependencies": {
+    "ws": "^8.5.0"
+  }
+}
