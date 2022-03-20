@@ -62,7 +62,8 @@ function inflatePreviewCard(){
 							<p class="last-update-text">Updating...</p>
 						</div>
 					</section>`)
-	$('.page.overview > .coltainer').append(newCard)
+	$('.page.overview .card-preview-zone').append(newCard)
+	newCard.on('click', previewCardClick)
 	return newCard
 }
 
@@ -146,6 +147,45 @@ function dismissConnectionStatusDisplay(){
 	let chip = $('.connection-status')
 	chip.addClass('hidden')
 }
+
+var watchedID = -1
+
+function previewCardClick(){
+	watchedID = $(this).index('.hoophouse-card')
+	updateWatch()
+	toDetailsPage()
+}
+
+function exitWatch(){
+	toMainPage()
+}
+
+function updateWatch(){
+	let house = houses[watchedID]
+	$('.page.details .temp').text(house.temperature)
+	$('.page.details .humid').text(house.humidity)
+
+	$('.page.details h1').text(house.name)
+}
+
+//#region page stuff
+function toDetailsPage(){
+	$('.page.overview').addClass("off-left")
+	window.setTimeout(()=>{
+		$('.page.overview').css('display','none')
+		$('.page.details').css('display','').width()
+		$('.page.details').removeClass('off-right')
+	},300)
+}
+function toMainPage(){
+	$('.page.details').addClass("off-right")
+	window.setTimeout(()=>{
+		$('.page.details').css('display','none')
+		$('.page.overview').css('display','').width()
+		$('.page.overview').removeClass('off-left')
+	},300)
+}
+//#endregion
 
 
 

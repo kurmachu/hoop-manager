@@ -26,10 +26,12 @@ module.exports = class ClientSocket extends EventEmitter {
 
 	hookIntoAll(){
 		this.hoopHouses.forEach((hoop)=>{
-			hoop.on('changed',()=>{
-				sendTo(this.ws,{type:"house", hoop: hoop.serialize(), index: this.hoopHouses.indexOf(hoop)},this.key)
-			})
+			hoop.on('changed',this.doChange)
 		})
+	}
+
+	doChange = (hoop) => {
+		sendTo(this.ws,{type:"house", hoop: hoop.serialize(), index: this.hoopHouses.indexOf(hoop)},this.key)
 	}
 
 	processMessage = (data) => { //arrow function used to avoid "this" change
@@ -57,6 +59,9 @@ module.exports = class ClientSocket extends EventEmitter {
 			this.clients.splice(this.clients.indexOf(this), 1)
 			console.log(`Clients (now at ${this.clients.length}) -> [X]`)
 		}
+		this.hoopHouses.forEach((hoop)=>{
+			hoop.off('changed', this.doChange)
+		})
 	}
 
 
