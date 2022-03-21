@@ -258,7 +258,7 @@ body {
 	font-size: inherit;
 	border-radius: 5px;
 	box-shadow: 0px 0px 16px #ffffff75 inset;
-	transition: background-color 0.3s;
+	transition: background-color 0.3s, box-shadow 0.3s, opacity 0.3s;
 }
 .action-buttons > .door-button{
 	flex-grow: 1;
@@ -266,6 +266,10 @@ body {
 }
 .action-buttons > .auto-button{
 	flex-grow: 0.4;
+}
+.action-buttons button:disabled{
+	box-shadow: 0px 0px 58px 0px grey inset;
+	opacity: 0.7;
 }
 
 .log-view {
@@ -283,4 +287,19 @@ body {
 
 .auto-status {
 	font-weight: bold;
+}
+
+.bottom-action-bar {
+	display: flex;
+	margin-top: 10px;
+	font-size: 1em;
+}
+.bottom-action-bar button {
+	font-size: inherit;
+	border-radius: 5px;
+	box-shadow: 0px 0px 3px #00000073;
+	padding: 10px 20px;
+	border: none;
+	flex-grow: 1;
+	background-color: white;
 }

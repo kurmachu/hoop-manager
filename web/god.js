@@ -180,6 +180,8 @@ function updateWatch(){
 	$('.auto-button').addClass(house.auto? 'door-auto' : 'door-manual')
 
 	$('.auto-status').text(house.auto? "ON" : "OFF")
+
+	$('.auto-button').add('.door-button').prop('disabled', !house.connected||(ws==null))
 }
 
 //#region page stuff
@@ -253,6 +255,7 @@ function handleInitialFail(){
 		}
 		
 	},3000)
+	$('.auto-button').add('.door-button').prop('disabled', true)
 	ws = null
 }
 
