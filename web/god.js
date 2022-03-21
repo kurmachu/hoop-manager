@@ -155,13 +155,13 @@ function previewCardClick(){
 	//tell the server we're watching
 	sendMessage({type:"watching", index: watchedID})
 	updateWatch()
-	toDetailsPage()
+	toPageRight('.page.details')
 }
 
 function exitWatch(){
 	sendMessage({type:"not watching"})
 	watchedID = -1
-	toMainPage()
+	toPageLeft('.page.overview')
 }
 
 function updateWatch(){
@@ -184,23 +184,37 @@ function updateWatch(){
 	$('.auto-button').add('.door-button').prop('disabled', !house.connected||(ws==null))
 }
 
+
+function openSettingsForCurrentWatch(){
+	toPageRight('.page.detail-settings')
+	
+}
+function closeAndSaveSettings(){
+	toPageLeft('.page.details')
+}
+function closeAndDiscardSettings(){
+	toPageLeft('.page.details')
+}
+
 //#region page stuff
-function toDetailsPage(){
-	$('.page.overview').addClass("off-left")
+function toPageRight(pageSelector){
+	$('.page.current').addClass("off-left")
 	window.setTimeout(()=>{
-		$('.page.overview').css('display','none')
-		$('.page.details').css('display','').width()
-		$('.page.details').removeClass('off-right')
+		$('.page.current').css('display','none').removeClass('current')
+		$(pageSelector).css('display','').width()
+		$(pageSelector).removeClass('off-right').addClass('current')
 	},300)
 }
-function toMainPage(){
-	$('.page.details').addClass("off-right")
+function toPageLeft(pageSelector){
+	$('.page.current').addClass("off-right")
 	window.setTimeout(()=>{
-		$('.page.details').css('display','none')
-		$('.page.overview').css('display','').width()
-		$('.page.overview').removeClass('off-left')
+		$('.page.current').css('display','none').removeClass('current')
+		$(pageSelector).css('display','').width()
+		$(pageSelector).removeClass('off-left').addClass('current')
 	},300)
 }
+
+
 //#endregion
 
 

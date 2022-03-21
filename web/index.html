@@ -13,7 +13,7 @@
 </head>
 <body>
 	<main>
-		<article class="page overview">
+		<article class="page overview current">
 			<div class="coltainer">
 				<h1 class="page-title">Your hoop houses</h1>
 				<div class="card-preview-zone">
@@ -23,11 +23,11 @@
 		</article>
 		<article class="page details off-right" style="display: none;">
 			<div class="coltainer">
-				<div style="display: flex;align-items: center; margin: 1.2em 0;" class="page-title">
-					<span class="material-icons" style="font-size: 2em" onclick="exitWatch()">arrow_back</span>
-					<div style="display: flex; flex-direction: column; margin-left: 11px;">
-						<h1 style="margin: 0;">The title goes here</h1>
-						<p style="margin: 0;" class="last-update-text">Last updated: 3 hours ago</p>
+				<div class="page-title top-back-layout">
+					<span class="material-icons top-back-icon" onclick="exitWatch()">arrow_back</span>
+					<div class="top-back-stack">
+						<h1>The title goes here</h1>
+						<p class="last-update-text">Last updated: 3 hours ago</p>
 					</div>
 				</div>
 				
@@ -51,7 +51,25 @@
 					<p>beansbeansbeans</p>
 				</div>
 				<div class="bottom-action-bar">
-					<button><span class="status-chip" style="justify-content: center;"><span class="material-icons">edit</span><span>Edit</span></span></button>
+					<button onclick="openSettingsForCurrentWatch()"><span class="status-chip" style="justify-content: center;"><span class="material-icons">edit</span><span>Edit</span></span></button>
+				</div>
+			</div>
+		</article>
+		<article class="page detail-settings off-right" style="display: none;">
+			<div class="coltainer">
+				<div class="page-title top-back-layout">
+					<span class="material-icons top-back-icon" onclick="closeAndDiscardSettings()">arrow_back</span>
+					<div class="top-back-stack">
+						<h1>Edit</h1>
+						<!-- <p class="last-update-text">(name goes here?)</p> -->
+					</div>
+				</div>
+				<label>
+					<p>Name</p>
+					<input type="text" id="house-name">
+				</label>
+				<div class="bottom-action-bar">
+					<button onclick="closeAndSaveSettings()" class="save-button"><span class="status-chip" style="justify-content: center;"><span class="material-icons">save</span><span>Save</span></span></button>
 				</div>
 			</div>
 		</article>

@@ -234,6 +234,23 @@ body {
 	transform: translate(20px,0px);
 }
 
+.top-back-layout {
+	display: flex;
+	align-items: center;
+	margin: 1.2em 0;
+}
+.top-back-icon {
+	font-size: 2em;
+}
+.top-back-stack {
+	display: flex;
+	flex-direction: column;
+	margin-left: 11px;
+}
+.top-back-stack > h1, .top-back-stack > p {
+	margin: 0;
+}
+
 .action-buttons {
 	display: flex;
 	margin-top: 10px;
@@ -302,4 +319,21 @@ body {
 	border: none;
 	flex-grow: 1;
 	background-color: white;
+}
+
+.detail-settings label p {
+	margin: 0;
+}
+.detail-settings input {
+	border-radius: 5px;
+	border: 2px solid gray;
+	font-size: 1.2em;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 4px 5px;
+}
+
+.bottom-action-bar .save-button {
+	color: white;
+	background-color: #3c6cc7;
 }
