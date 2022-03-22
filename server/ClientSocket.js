@@ -51,7 +51,20 @@ module.exports = class ClientSocket extends EventEmitter {
 
 			case "not watching":
 				this.unwatch()
-		
+				break;
+
+			case "save":
+				try{
+					let h = this.hoopHouses[message.index]
+					h.name = message.name
+					h.notifyChanged()
+					sendTo(this.ws,{type:"done"},this.key)
+				}catch(e){
+					console.error("Failed to update hoop house")
+					console.error(message)
+					console.error(e)
+				}
+
 			default:
 				break;
 		}
