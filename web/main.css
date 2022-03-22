@@ -319,7 +319,14 @@ body {
 	border: none;
 	flex-grow: 1;
 	background-color: white;
+	transition: background-color 0.3s, box-shadow 0.3s, color 0.3s;
 }
+.bottom-action-bar button:disabled {
+	box-shadow: 0px 0px 3px #00000073;
+	background-color: #d5d5d5;
+    color: #5a5a5a;
+}
+
 
 .detail-settings label p {
 	margin: 0;

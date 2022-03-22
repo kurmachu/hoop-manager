@@ -188,9 +188,11 @@ function updateWatch(){
 function openSettingsForCurrentWatch(){
 	toPageRight('.page.detail-settings')
 	$('#house-name').val(houses[watchedID].name)
+	$('.save-button').prop('disabled', false)
 }
 function closeAndSaveSettings(){
 	okayStatus = "save"
+	$('.save-button').prop('disabled', true)
 	setConnectionStatusDisplay(inflateChip("cloud_sync","Saving..."), true)
 	window.setTimeout(()=>{
 		sendMessage({
@@ -203,6 +205,12 @@ function closeAndSaveSettings(){
 }
 function closeAndDiscardSettings(){
 	toPageLeft('.page.details')
+}
+
+function toggleAutoForWatched(){
+	if(watchedID > -1){
+		sendMessage({type:"toggle auto", index: watchedID})
+	}
 }
 
 //#region page stuff
