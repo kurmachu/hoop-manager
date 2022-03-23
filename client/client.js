@@ -97,6 +97,10 @@ function rescheduleSync(){
 function syncToServer(forWatch){
 	console.log("Gathering data for server sync...")
 	getSensorDataAsync().then((sensorData)=>{
+		if(sensorData==undefined){
+			console.log("Unable to sync.")
+			return
+		}
 		sendTo(ws,{
 			type: "sync",
 			doorOpen: getIsDoorOpen(),
@@ -159,6 +163,11 @@ function beginCommunication(){
 					console.log("Attemting to register with server...")
 					console.log("Gathering information for initial frame...")
 					getSensorDataAsync().then((sensorData)=>{
+						if(sensorData==undefined){
+							console.log("Unable to sync. Will now close socket.")
+							ws.close()
+							return
+						}
 						let initialFrame = {
 							doorOpen: getIsDoorOpen(),
 							temperature: sensorData.temperature,
