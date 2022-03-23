@@ -1,5 +1,6 @@
 const {WebSocket, WebSocketServer} = require('ws')
 const { sendTo, decodeFrom } = require('./MessageUtil')
+const sensor = require("node-dht-sensor").promises;
 const fs = require('fs')
 
 console.log("Hoop house stating up...")
@@ -10,7 +11,7 @@ console.log("Reading user config...")
 const defaultConfig = {
 	websocketURL: "ws://localhost:3994/",
 	key: false
-}
+} 
 var config = defaultConfig
 if (fs.existsSync('config.json')) {
 	try {
@@ -94,14 +95,18 @@ function rescheduleSync(){
 }
 
 function syncToServer(forWatch){
-	console.log("Performing server sync...")
-	sendTo(ws,{
-		type: "sync",
-		doorOpen: getIsDoorOpen(),
-		temperature: getTemperature(),
-		humidity: getHumidity(),
-		forWatch: forWatch
-	}, config.key)
+	console.log("Gathering data for server sync...")
+	getSensorDataAsync().then((sensorData)=>{
+		sendTo(ws,{
+			type: "sync",
+			doorOpen: getIsDoorOpen(),
+			temperature: sensorData.temperature,
+			humidity: sensorData.humidity,
+			forWatch: forWatch
+		}, config.key)
+		console.log("Sync sent.")
+	})
+	
 }
 
 function beginCommunication(){
@@ -153,13 +158,16 @@ function beginCommunication(){
 				if(save.state == "first"){
 					console.log("Attemting to register with server...")
 					console.log("Gathering information for initial frame...")
-					let initialFrame = {
-						doorOpen: getIsDoorOpen(),
-						temperature: getTemperature(),
-						humidity: getHumidity()
-					}
-					console.log("Registering...")
-					sendTo(ws,{type: "am new hoop", initialFrame},config.key)
+					getSensorDataAsync().then((sensorData)=>{
+						let initialFrame = {
+							doorOpen: getIsDoorOpen(),
+							temperature: sensorData.temperature,
+							humidity: sensorData.getHumidity
+						}
+						console.log("Registering...")
+						sendTo(ws,{type: "am new hoop", initialFrame},config.key)
+					})
+					
 				}else{
 					sendTo(ws,{type: "am hoop", id: save.id},config.key)
 				}
@@ -213,12 +221,11 @@ function getIsDoorOpen(){
 	//return false //TODO ACTUALLY GET VALUE
 	return (Math.random()<0.5)
 }
-function getTemperature(){
-	//return 27 //TODO ACTUALLY GET VALUE
-	return Math.round(Math.random()*100)
-}
-function getHumidity(){
-	//return 99 //TODO ACTUALLY GET VALUE
-	return Math.round(Math.random()*100)
-}
+async function getSensorDataAsync() {
+	try {
+	  return await sensor.read(22, 4);
+	} catch (err) {
+	  console.error("Failed to read sensor data:", err);
+	}
+  }
 //#endregion
