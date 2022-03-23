@@ -327,7 +327,10 @@ body {
     color: #5a5a5a;
 }
 
-
+.detail-settings label {
+	display: block;
+	margin-bottom: 0.9em;
+}
 .detail-settings label p {
 	margin: 0;
 }
