@@ -102,8 +102,8 @@ module.exports = class ClientSocket extends EventEmitter {
 		let message = decodeFrom(data, this.key)
 		if(message.type=="sync"){
 			console.log(this.name + " has sent information")
-			this.humidity = message.humidity,
-			this.temperature = message.temperature,
+			this.humidity = Math.floor(message.humidity),
+			this.temperature = Math.floor(message.temperature),
 			this.doorOpen = message.doorOpen,
 			this.lastUpdate = new Date().getTime()
 			if(message.forWatch){
