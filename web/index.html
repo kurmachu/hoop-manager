@@ -39,7 +39,7 @@
 				</div>
 				<div class="action-buttons">
 					<button class="door-closed door-button"><span class="status-chip" style="justify-content: center;"><span class="material-icons">sensor_door</span><span>Closed</span></span></button>
-					<button class="door-auto auto-button"><small>Auto</small><br><span class="auto-status">OFF</span></button>
+					<button class="door-auto auto-button" onclick="toggleAutoForWatched()"><small>Auto</small><br><span class="auto-status">OFF</span></button>
 					<div class="readouts">
 						<div class="readout"><span class="material-icons">thermostat</span><span><span class="temp">..</span>ºC</span></div>
 						<div class="readout"><span class="material-icons">water_drop</span><span><span class="humid">..</span>%</span></div>
@@ -66,8 +66,19 @@
 				</div>
 				<label>
 					<p>Name</p>
-					<input type="text" id="house-name">
+					<input type="text" id="house-name" autocomplete="off">
 				</label>
+				<label>
+					<p>Target Humidity</p>
+					<div class="bottom-action-bar">
+						<input type="number" id="house-name" autocomplete="off" min="0" max="100">
+					</div>
+				</label>
+				<label>
+					<p>Acceptable temperature range</p>
+					<input type="text" id="house-name" autocomplete="off">
+				</label>
+				<p><span class="status-chip" style="justify-content: center; color: black"><span class="material-icons" style="margin-right: 9px;">info</span><span><small>Changes to targets will be applied when the hoop house is online.</small></span></span></p>
 				<div class="bottom-action-bar">
 					<button onclick="closeAndSaveSettings()" class="save-button"><span class="status-chip" style="justify-content: center;"><span class="material-icons">save</span><span>Save</span></span></button>
 				</div>

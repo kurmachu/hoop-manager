@@ -187,13 +187,30 @@ function updateWatch(){
 
 function openSettingsForCurrentWatch(){
 	toPageRight('.page.detail-settings')
-	
+	$('#house-name').val(houses[watchedID].name)
+	$('.save-button').prop('disabled', false)
 }
 function closeAndSaveSettings(){
-	toPageLeft('.page.details')
+	okayStatus = "save"
+	$('.save-button').prop('disabled', true)
+	setConnectionStatusDisplay(inflateChip("cloud_sync","Saving..."), true)
+	window.setTimeout(()=>{
+		sendMessage({
+			type: "save", 
+			index: watchedID,
+			name: $('#house-name').val()
+		})
+	},100)
+	
 }
 function closeAndDiscardSettings(){
 	toPageLeft('.page.details')
+}
+
+function toggleAutoForWatched(){
+	if(watchedID > -1){
+		sendMessage({type:"toggle auto", index: watchedID})
+	}
 }
 
 //#region page stuff
@@ -222,6 +239,8 @@ function toPageLeft(pageSelector){
 //#region the websocket code
 var ws = null
 var connectionFails = 0
+var okayStatus = "connecting"
+
 
 function tryConnect(){
 	if(!navigator.onLine){
@@ -234,6 +253,7 @@ function tryConnect(){
 		return
 	}
 	try {
+		okayStatus = "connecting"
 		ws = new WebSocket(SERVER_SOCKET_ADDRESS)
 		// ws.onerror = handleInitialFail
 		ws.onclose = handleInitialKick
@@ -343,7 +363,12 @@ function handleMessage(event){
 			break;
 
 		case "done":
-			connectionStatusDone()
+			if(okayStatus=="connecting"){
+				connectionStatusDone("Connected")
+			}else if(okayStatus=="save"){
+				connectionStatusDone("Saved")
+				toPageLeft('.page.details')
+			}
 			break;
 			
 		case "please reload":
@@ -356,9 +381,9 @@ function handleMessage(event){
 	}
 }
 
-function connectionStatusDone(){
+function connectionStatusDone(text){
 	if(!$('.connection-status').hasClass('hidden')){
-		setConnectionStatusDisplay(inflateChip("done","Connected"),false)
+		setConnectionStatusDisplay(inflateChip("done",text),false)
 		hideTimeout = setTimeout(()=>{
 			dismissConnectionStatusDisplay()
 		},2000)

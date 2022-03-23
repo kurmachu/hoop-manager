@@ -121,10 +121,9 @@ wss.on('connection', function connection(ws) {
 			humidity: initialFrame.humidity,
 			lastUpdate: new Date().getTime(),
 			config: {
-				mintemp: 0,
-				maxtemp: 0,
-				minhumid: 0,
-				maxhumid: 0
+				mintemp: 18.5,
+				maxtemp: 26.5,
+				targethumid: 85
 			},
 			id: newID
 		}, config)

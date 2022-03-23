@@ -63,7 +63,8 @@ module.exports = class ClientSocket extends EventEmitter {
 			temperature: this.temperature,
 			doorOpen: this.doorOpen,
 			connected: (this.ws!=null),
-			id: this.id
+			id: this.id,
+			config: this.config
 		}
 	}
 	
