@@ -1,7 +1,8 @@
 @font-face {
 	font-family: Montserrat;
-	src: url('/Montserrat-Variable.ttf');
+	src: url('Montserrat-Variable.ttf');
 	font-weight: 1 999;
+	font-display: block;
 }
 
 @font-face {
@@ -9,7 +10,8 @@
 	font-style: normal;
 	font-weight: 400;
 	src: local('MaterialIconsOutlined-Regular'),
-	  url(/MaterialIconsOutlined-Regular.otf);
+	  url(MaterialIconsOutlined-Regular.otf);
+	font-display: block;
 }
 .material-icons {
 	font-family: 'Material Icons';
