@@ -83,6 +83,7 @@ body {
 .hoop-img {
 	display: block;
 	min-height: 100px;
+	width: 100%;
 }
 .hoop-img-cover {
 	position: absolute;
@@ -93,6 +94,12 @@ body {
 	color: white;
 	font-size: 3em;
 	background-color: #0000009f;
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+.hoophouse-card.disconnected .hoop-img-cover, .hoophouse-card.loading .hoop-img-cover,
+.hoop-img-cover.disconnected, .hoop-img-cover.loading {
+	opacity: 1;
 }
 .hoop-img-cover > .material-icons {
 	position: absolute;

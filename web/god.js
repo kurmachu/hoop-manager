@@ -1,4 +1,4 @@
-const SERVER_SOCKET_ADDRESS = "ws://localhost:3994"
+const SERVER_SOCKET_ADDRESS = "ws://192.168.8.139:3994"
 
 var houses = []
 
@@ -24,7 +24,15 @@ function updatePreviewCards(){
 		chips.append(inflateChip(hoopHouse.auto? "settings_suggest" : "gamepad",hoopHouse.auto? "Auto" : "Manual", hoopHouse.auto? "door-auto" : "door-manual"))
 		if(!hoopHouse.connected){
 			chips.append(inflateChip("wifi_off","Disconnected", "chip-disconnected"))
-			card.find('.hoop-img-cover div').text('wifi_off').fadeIn()
+			card.find('.hoop-img-cover div').text('wifi_off')
+			card.addClass("disconnected")
+		}else{
+			card.removeClass('disconnected')
+			card.find('.hoop-img-cover div').text('hourglass_top')
+		}
+
+		if(hoopHouse.image){
+			setImage(card, hoopHouse.image)
 		}
 		
 	})
@@ -36,7 +44,7 @@ window.setTimeout(()=>{
 updatePreviewCards()
 
 function inflatePreviewCard(){
-	let newCard = $(`<section class="hoophouse-card">
+	let newCard = $(`<section class="hoophouse-card loading">
 						<div class="hoop-img-container">
 							<img class="hoop-img" src="" alt="">
 							<div class="hoop-img-cover">
@@ -154,6 +162,8 @@ function previewCardClick(){
 	watchedID = $(this).index('.hoophouse-card')
 	//tell the server we're watching
 	sendMessage({type:"watching", index: watchedID})
+	$('.page.details .hoop-img')[0].src = ''
+	$('.page.details .hoop-img-cover').addClass('loading')
 	updateWatch()
 	toPageRight('.page.details')
 }
@@ -182,6 +192,18 @@ function updateWatch(){
 	$('.auto-status').text(house.auto? "ON" : "OFF")
 
 	$('.auto-button').add('.door-button').prop('disabled', !house.connected||(ws==null))
+
+	if(house.image){
+		setImageWatched(house.image)
+	}
+
+	if(!house.connected){
+		$('.page.details .hoop-img-cover div').text('wifi_off')
+		$('.page.details .hoop-img-cover').addClass("disconnected")
+	}else{
+		$('.page.details .hoop-img-cover div').text('hourglass_top')
+		$('.page.details .hoop-img-cover').removeClass("disconnected")
+	}
 }
 
 
@@ -360,6 +382,7 @@ function handleMessage(event){
 			if(message.index == watchedID) {
 				updateWatch()
 			}
+			sendMessage({type: "get image", index: message.index}) //request image
 			break;
 
 		case "done":
@@ -376,6 +399,14 @@ function handleMessage(event){
 			ws.close()
 			setConnectionStatusDisplay(inflateChip("refresh","Please refresh").css("white-space","initial"), true)
 			break;
+
+		case "image":
+			houses[message.index].image = message.image
+			updatePreviewCards()
+			if(watchedID>=0){
+				updateWatch()
+			}
+			break;
 		default:
 			break;
 	}
@@ -390,6 +421,50 @@ function connectionStatusDone(text){
 	}
 }
 //#endregion
+
+function setImage(card, newImage){ //TODO ANIM STUFF
+	let image = $(card.find('.hoop-img')[0])
+
+	if($('.page.overview').hasClass('off-left')||$('.page.overview').hasClass('off-right')){
+		//Skip the animation
+		card.removeClass('loading')
+		image[0].src = newImage
+		return
+	}
+	//Otherwise, continute to do the animation
+	let currentHeight = image.parent().height()
+	image.parent().css('height', currentHeight)
+	image[0].src = newImage
+	window.setTimeout(()=>{ //let the image load
+		image.parent().animate({height: image.height()},()=>{
+			image.parent().css('height','')
+		})
+		card.removeClass('loading')
+	}, 100)
+}
+function setImageWatched(newImage, doTry=true){ //TODO ANIM STUFF
+	let image = $($('.page.details .hoop-img')[0])
+
+	if($('.page.details').hasClass('off-left')||$('.page.details').hasClass('off-right')){
+		//Skip the animation
+		if(doTry){
+			window.setTimeout(()=>{
+				setImageWatched(newImage, false)
+			},500)//Try again in a second
+		}
+		return
+	}
+	//Otherwise, continute to do the animation
+	let currentHeight = image.parent().height()
+	image.parent().css('height', currentHeight)
+	image[0].src = newImage
+	window.setTimeout(()=>{ //let the image load
+		image.parent().animate({height: image.height()},()=>{
+			image.parent().css('height','')
+		})
+		image.siblings().removeClass('loading')
+	}, 100)
+}
 
 setConnectionStatusDisplay($('<p>Connecting...</p>'))
 tryConnect()

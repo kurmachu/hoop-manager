@@ -79,6 +79,14 @@ module.exports = class ClientSocket extends EventEmitter {
 				}
 				break;
 
+			case "get image":
+				try {
+					sendTo(this.ws,{type:"image", index: message.index, image: this.hoopHouses[message.index].image},this.key)
+				}catch (e){
+					//not that important, don't log.
+				}
+				break;
+
 			default:
 				break;
 		}

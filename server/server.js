@@ -80,7 +80,9 @@ if (fs.existsSync('./save/houses.json')) {
 	console.log("House save file not found, skipping...")
 }
 hoopHouses.forEach((house)=>{
+	console.log(house.name + "---------------------------------")
 	house.on('changed', ()=>{
+		console.log("Saving houses to disk...")
 		saveHouses()
 	})
 })

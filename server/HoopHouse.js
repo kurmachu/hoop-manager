@@ -18,6 +18,9 @@ module.exports = class ClientSocket extends EventEmitter {
 	temperature
 	doorOpen
 
+	//transients
+	image
+
 	//other
 	log = []
 	ws = null
@@ -111,6 +114,10 @@ module.exports = class ClientSocket extends EventEmitter {
 			}else{
 				this.notifyChanged()
 			}
+		}else if (message.type == "image"){
+			this.image = message.image
+			console.log("Received image from " + this.name)
+			this.notifyChanged()
 		}
 	}
 
