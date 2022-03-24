@@ -118,8 +118,8 @@ wss.on('connection', function connection(ws) {
 			name: "Unnamed",
 			doorOpen: initialFrame.doorOpen,
 			auto: false,
-			temperature: initialFrame.temperature,
-			humidity: initialFrame.humidity,
+			temperature: Math.floor(initialFrame.temperature),
+			humidity: Math.floor(initialFrame.humidity),
 			lastUpdate: new Date().getTime(),
 			config: {
 				mintemp: 18,
