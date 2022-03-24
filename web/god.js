@@ -1,4 +1,4 @@
-const SERVER_SOCKET_ADDRESS = "ws://192.168.8.139:3994"
+const SERVER_SOCKET_ADDRESS = "ws://104.236.55.132:3994"
 
 var houses = []
 
@@ -190,6 +190,8 @@ function updateWatch(){
 	$('.auto-button').addClass(house.auto? 'door-auto' : 'door-manual')
 
 	$('.auto-status').text(house.auto? "ON" : "OFF")
+
+	$('.page.details .last-update-text').text("Last updated: " + produceLastUpdateString(new Date().getTime() - house.lastUpdate))
 
 	$('.auto-button').add('.door-button').prop('disabled', !house.connected||(ws==null))
 
