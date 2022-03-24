@@ -80,7 +80,6 @@ if (fs.existsSync('./save/houses.json')) {
 	console.log("House save file not found, skipping...")
 }
 hoopHouses.forEach((house)=>{
-	console.log(house.name + "---------------------------------")
 	house.on('changed', ()=>{
 		console.log("Saving houses to disk...")
 		saveHouses()
@@ -123,8 +122,8 @@ wss.on('connection', function connection(ws) {
 			humidity: initialFrame.humidity,
 			lastUpdate: new Date().getTime(),
 			config: {
-				mintemp: 18.5,
-				maxtemp: 26.5,
+				mintemp: 18,
+				maxtemp: 26,
 				targethumid: 85
 			},
 			id: newID

@@ -57,7 +57,11 @@ module.exports = class ClientSocket extends EventEmitter {
 				try{
 					let h = this.hoopHouses[message.index]
 					h.name = message.name
+					h.config.targethumid = message.targethumid
+					h.config.mintemp = message.mintemp
+					h.config.maxtemp = message.maxtemp
 					h.notifyChanged()
+					h.syncToClient()
 					sendTo(this.ws,{type:"done"},this.key)
 				}catch(e){
 					console.error("Failed to update hoop house")

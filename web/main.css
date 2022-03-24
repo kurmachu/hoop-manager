@@ -48,6 +48,10 @@ body {
 	margin: 0px;
 }
 
+input {
+	font-family: inherit;
+}
+
 .coltainer {
 	margin: auto;
 	max-width: min(370px, calc(100vw - 10px));
@@ -340,6 +344,8 @@ body {
 }
 .detail-settings label p {
 	margin: 0;
+	margin-bottom: 1px;
+	color: #575757;
 }
 .detail-settings input {
 	border-radius: 5px;
@@ -360,4 +366,17 @@ body {
 .bottom-action-bar .save-button {
 	color: white;
 	background-color: #3c6cc7;
+}
+
+.settings-line {
+	display: flex;
+	align-items: center;
+}
+.settings-line > span {
+	font-size: 1.2em;
+}
+
+
+.bottom-padding {
+	height: 50px;
 }

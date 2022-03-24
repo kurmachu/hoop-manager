@@ -20,6 +20,7 @@
 					
 				</div>
 			</div>
+			<div class="bottom-padding"></div>
 		</article>
 		<article class="page details off-right" style="display: none;">
 			<div class="coltainer">
@@ -54,6 +55,7 @@
 					<button onclick="openSettingsForCurrentWatch()"><span class="status-chip" style="justify-content: center;"><span class="material-icons">edit</span><span>Edit</span></span></button>
 				</div>
 			</div>
+			<div class="bottom-padding"></div>
 		</article>
 		<article class="page detail-settings off-right" style="display: none;">
 			<div class="coltainer">
@@ -70,19 +72,28 @@
 				</label>
 				<label>
 					<p>Target Humidity</p>
-					<div class="bottom-action-bar">
-						<input type="number" id="house-name" autocomplete="off" min="0" max="100">
+					<div class="settings-line">
+						<span class="material-icons" style="font-size: 1.6em; color: #575757; margin-right: 4px">water_drop</span>
+						<input type="number" id="house-target" autocomplete="off" min="0" max="100" style="width: 5ch;">
+						<span style="margin-left: 2px;">%</span>
 					</div>
 				</label>
 				<label>
 					<p>Acceptable temperature range</p>
-					<input type="text" id="house-name" autocomplete="off">
+					<div class="settings-line">
+						<span class="material-icons" style="font-size: 1.6em; color: #575757; margin-right: 4px">thermostat</span>
+						<input type="number" id="house-min" autocomplete="off" min="-25" max="50" style="width: 5ch;">
+						<span style="margin: 0px 5px; color: #575757;">to</span>
+						<input type="number" id="house-max" autocomplete="off" min="-25" max="50" style="width: 5ch;">
+						<span style="margin-left: 2px;">ºC</span>
+					</div>
 				</label>
-				<p><span class="status-chip" style="justify-content: center; color: black"><span class="material-icons" style="margin-right: 9px;">info</span><span><small>Changes to targets will be applied when the hoop house is online.</small></span></span></p>
+				<p><span class="status-chip" style="justify-content: center; color: black"><span class="material-icons" style="margin-right: 11px;">info</span><span><small>Changes to targets will be applied when the hoop house is online.</small></span></span></p>
 				<div class="bottom-action-bar">
 					<button onclick="closeAndSaveSettings()" class="save-button"><span class="status-chip" style="justify-content: center;"><span class="material-icons">save</span><span>Save</span></span></button>
 				</div>
 			</div>
+			<div class="bottom-padding"></div>
 		</article>
 		<section class="connection-status-container">
 			<article class="connection-status coltainer hidden">

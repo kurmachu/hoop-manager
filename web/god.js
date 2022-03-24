@@ -210,6 +210,9 @@ function updateWatch(){
 function openSettingsForCurrentWatch(){
 	toPageRight('.page.detail-settings')
 	$('#house-name').val(houses[watchedID].name)
+	$('#house-target').val(houses[watchedID].config.targethumid)
+	$('#house-min').val(houses[watchedID].config.mintemp)
+	$('#house-max').val(houses[watchedID].config.maxtemp)
 	$('.save-button').prop('disabled', false)
 }
 function closeAndSaveSettings(){
@@ -220,6 +223,9 @@ function closeAndSaveSettings(){
 		sendMessage({
 			type: "save", 
 			index: watchedID,
+			targethumid: $('#house-target').val(),
+			mintemp: $('#house-min').val(),
+			maxtemp: $('#house-max').val(),
 			name: $('#house-name').val()
 		})
 	},100)
