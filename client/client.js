@@ -1,6 +1,7 @@
 const {WebSocket, WebSocketServer} = require('ws')
 const { sendTo, decodeFrom } = require('./MessageUtil')
 const sensor = require("node-dht-sensor").promises;
+const PiCamera = require('pi-camera');
 const fs = require('fs')
 
 console.log("Hoop house stating up...")
@@ -10,7 +11,8 @@ console.log("Reading user config...")
 //default config
 const defaultConfig = {
 	websocketURL: "ws://localhost:3994/",
-	key: false
+	key: false,
+	useCamera: true
 } 
 var config = defaultConfig
 if (fs.existsSync('config.json')) {
@@ -66,12 +68,14 @@ var ws = null
 var retryTime = 10*1000
 var syncTimer = -1
 var watchSyncTimer = -1
+var camera = null
 
 if(save.state=="first"){
 	console.log("We don't have a config or ID, so we cannot act yet. We will now try to register with the server at " + config.websocketURL + " to retreive information.")
 	beginCommunication()
 }else if(save.state=="ok"){
 	console.log(`Our ID is ${save.id}, Launching services.`)
+	setupCamera()
 	beginManagement()
 	beginCommunication()
 }
@@ -110,7 +114,15 @@ function syncToServer(forWatch){
 		}, config.key)
 		console.log("Sync sent.")
 	})
-	
+	if (camera != null) {
+		camera.snapDataUrl().then((result) => {
+			sendTo(ws, {type:"image", image: result},config.key)
+		})
+		.catch((error) => {
+			console.warn("Unable to capture image")
+			console.warn(error)
+		});
+	}
 }
 
 function beginCommunication(){
@@ -193,6 +205,7 @@ function beginCommunication(){
 				if(save.state=="first"){//this is our first sync
 					console.log("Successfully registered. Our ID is " + save.id)
 					beginManagement()
+					setupCamera()
 				}
 				save.state = "ok"
 				saveState()
@@ -222,6 +235,17 @@ function beginCommunication(){
 				console.log(message)
 				break;
 		}
+	}
+}
+
+function setupCamera(){
+	if(config.useCamera){
+		camera = new PiCamera({
+			mode: 'photo',
+			width: 640,
+			height: 480,
+			nopreview: true,
+		});
 	}
 }
 
