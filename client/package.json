@@ -17,6 +17,7 @@
   "homepage": "https://github.com/kurmachu/god#readme",
   "dependencies": {
     "node-dht-sensor": "^0.4.3",
+    "pi-camera": "^1.7.0",
     "ws": "^8.5.0"
   }
 }
