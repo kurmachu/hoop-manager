@@ -1,0 +1,13 @@
+[Unit]
+Description=Hoophouse client to communicate with server and manage hardware
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/hoop-manager/client/
+ExecStart=/usr/bin/node /home/pi/hoop-manager/client/client.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

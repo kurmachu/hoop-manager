@@ -1,0 +1,13 @@
+[Unit]
+Description=Hoophouse backend management server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/hoop-manager/client/
+ExecStart=/usr/bin/node /root/hoop-manager/server/server.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
