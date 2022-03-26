@@ -1,4 +1,4 @@
-const SERVER_SOCKET_ADDRESS = "ws://104.236.55.132:3994"
+const SERVER_SOCKET_ADDRESS = "ws://localhost:3994"
 
 var houses = []
 
@@ -242,6 +242,11 @@ function toggleAutoForWatched(){
 		sendMessage({type:"toggle auto", index: watchedID})
 	}
 }
+function toggleDoorForWatched(){
+	if(watchedID > -1){
+		sendMessage({type:"toggle door", index: watchedID})
+	}
+}
 
 //#region page stuff
 function toPageRight(pageSelector){
@@ -476,3 +481,54 @@ function setImageWatched(newImage, doTry=true){ //TODO ANIM STUFF
 
 setConnectionStatusDisplay($('<p>Connecting...</p>'))
 tryConnect()
+
+
+
+
+
+
+
+
+var knockPattern = [0]
+function knock() {
+	let now = new Date().getTime()
+	if(now - knockPattern[knockPattern.length-1] > 2000){
+		knockPattern.length = 0
+	}
+	knockPattern.push(now)
+	for (let i = 0; i < knockPattern.length-1; i++) {
+		console.log(knockPattern[i+1] - knockPattern[i]);
+	}
+	if(knockPattern.length == 5){
+		let first = knockPattern[1] - knockPattern[0]
+		let second = knockPattern[2] - knockPattern[1]
+		let third = knockPattern[3] - knockPattern[2]
+		let fourth = knockPattern[4] - knockPattern[3]
+		if(first>360&&second<200&&third>300&&fourth<200){
+
+			$('.page.knock input[type="number"]').prop('max', houses.length-1)
+
+			let list = $('#debug-list')
+			list.children().remove()
+			list.append(`<p>Houses</p><hr>`)
+			houses.forEach((house)=>{
+				list.append(`<p><b>${houses.indexOf(house)}</b>: ${house.name} <small>${house.id}</small></p>`)
+			})
+			list.append(`<hr>`)
+
+			toPageRight('.page.knock')
+		}else{
+			knockPattern.length=0
+		}
+	}
+	console.log(knockPattern)
+	console.log(knockPattern)
+}
+
+function ADVsendSwap(){
+	sendMessage({type:"adv swap houses", a:$('#adv-swap-a').val(),b:$('#adv-swap-b').val()})
+}
+
+function ADVsendUnregister(){
+	sendMessage({type:"adv unregister", index:$('#adv-nuke').val()})
+}

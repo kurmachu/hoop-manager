@@ -334,22 +334,25 @@ input {
 	background-color: white;
 	transition: background-color 0.3s, box-shadow 0.3s, color 0.3s;
 }
+.bottom-action-bar button:hover {
+	background-color: #f5f5f5;
+}
 .bottom-action-bar button:disabled {
-	box-shadow: 0px 0px 3px #00000073;
+	box-shadow: 0px 0px 0px #00000073;
 	background-color: #d5d5d5;
     color: #5a5a5a;
 }
 
-.detail-settings label {
+.settings label {
 	display: block;
 	margin-bottom: 0.9em;
 }
-.detail-settings label p {
+.settings label p {
 	margin: 0;
 	margin-bottom: 1px;
 	color: #575757;
 }
-.detail-settings input {
+input {
 	border-radius: 5px;
 	border: 2px solid gray;
 	font-size: 1.2em;
@@ -359,7 +362,7 @@ input {
 	box-shadow: 0px 0px 0px #0000006b inset;
 	transition: box-shadow 0.3s, border-color 0.3s;
 }
-.detail-settings input:focus {
+input:focus {
 	outline: none;
 	border-color: #333333;
 	box-shadow: 0px 0px 3px #0000006b inset;
@@ -368,6 +371,10 @@ input {
 .bottom-action-bar .save-button {
 	color: white;
 	background-color: #3c6cc7;
+}
+.bottom-action-bar .save-button:hover:not(:disabled) {
+	color: white;
+	background-color: #507bcc;
 }
 
 .settings-line {
@@ -381,4 +388,9 @@ input {
 
 .bottom-padding {
 	height: 50px;
+}
+
+hr {
+	border: 1px solid gray;
+	border-radius: 1000px;
 }

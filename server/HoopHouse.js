@@ -132,4 +132,10 @@ module.exports = class ClientSocket extends EventEmitter {
 			sendTo(this.ws,{type:"watched?", isWatched: this.listenerCount('watchSync')},this.serverConfig.key)
 		}
 	}
+
+	askToggleDoor(){
+		if(this.ws != null){
+			sendTo(this.ws,{type:"toggle door"},this.serverConfig.key)
+		}
+	}
 }

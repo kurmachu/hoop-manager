@@ -69,6 +69,9 @@ var retryTime = 10*1000
 var syncTimer = -1
 var watchSyncTimer = -1
 var camera = null
+var cameraBusy = false
+
+var doorOpen = false
 
 if(save.state=="first"){
 	console.log("We don't have a config or ID, so we cannot act yet. We will now try to register with the server at " + config.websocketURL + " to retreive information.")
@@ -114,11 +117,14 @@ function syncToServer(forWatch){
 		}, config.key)
 		console.log("Sync sent.")
 	})
-	if (camera != null) {
+	if (camera != null&&!cameraBusy) {
+		cameraBusy = true
 		camera.snapDataUrl().then((result) => {
+			cameraBusy = false
 			sendTo(ws, {type:"image", image: result},config.key)
 		})
 		.catch((error) => {
+			cameraBusy = false
 			console.warn("Unable to capture image")
 			console.warn(error)
 		});
@@ -230,6 +236,15 @@ function beginCommunication(){
 				}
 				break;
 
+			case "toggle door":
+				if(doorOpen){
+					closeDoor()
+				}else{
+					openDoor()
+				}
+				syncToServer()
+				break;
+
 			default:
 				console.log("Unhandled type received from server:")
 				console.log(message)
@@ -251,8 +266,7 @@ function setupCamera(){
 
 //#region information gathering
 function getIsDoorOpen(){
-	//return false //TODO ACTUALLY GET VALUE
-	return (Math.random()<0.5)
+	return doorOpen
 }
 async function getSensorDataAsync() {
 	try {
@@ -260,5 +274,12 @@ async function getSensorDataAsync() {
 	} catch (err) {
 	  console.error("Failed to read sensor data:", err);
 	}
-  }
+	// return {temperature: 10, humidity: 10}
+}
+function openDoor(){
+	doorOpen = true
+}
+function closeDoor(){
+	doorOpen = false
+}
 //#endregion

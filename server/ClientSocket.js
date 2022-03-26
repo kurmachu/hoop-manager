@@ -83,11 +83,51 @@ module.exports = class ClientSocket extends EventEmitter {
 				}
 				break;
 
+			case "toggle door":
+				try{
+					let h = this.hoopHouses[message.index]
+					h.askToggleDoor()
+					// sendTo(this.ws,{type:"done"},this.key)
+				}catch(e){
+					console.error("Failed to request door action")
+					console.error(message)
+					console.error(e)
+				}
+				break;
+
 			case "get image":
 				try {
 					sendTo(this.ws,{type:"image", index: message.index, image: this.hoopHouses[message.index].image},this.key)
 				}catch (e){
 					//not that important, don't log.
+				}
+				break;
+
+				//Advanced operations
+			case "adv swap houses":
+				try {
+					console.warn(message)
+					let h1 = this.hoopHouses[message.a]
+					let h2 = this.hoopHouses[message.b]
+					this.hoopHouses[message.a] = h2
+					this.hoopHouses[message.b] = h1
+					this.clients.forEach((client)=>{
+						client.requestRefresh()
+					})
+				}catch (e){
+					console.error(e)
+				}
+				break;
+			case "adv unregister":
+				try {
+					console.warn(message)
+					this.clients.forEach((client)=>{
+						client.requestRefresh()
+					})
+					this.hoopHouses[message.index].deattatchWS()
+					this.hoopHouses.splice(message.index,1)
+				}catch (e){
+					console.error(e)
 				}
 				break;
 

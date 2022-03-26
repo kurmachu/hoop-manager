@@ -15,7 +15,7 @@
 	<main>
 		<article class="page overview current">
 			<div class="coltainer">
-				<h1 class="page-title">Your hoop houses</h1>
+				<h1 class="page-title" onclick="knock()">Your hoop houses</h1>
 				<div class="card-preview-zone">
 					
 				</div>
@@ -39,7 +39,7 @@
 					</div>
 				</div>
 				<div class="action-buttons">
-					<button class="door-closed door-button"><span class="status-chip" style="justify-content: center;"><span class="material-icons">sensor_door</span><span>Closed</span></span></button>
+					<button class="door-closed door-button" onclick="toggleDoorForWatched()"><span class="status-chip" style="justify-content: center;"><span class="material-icons">sensor_door</span><span>Closed</span></span></button>
 					<button class="door-auto auto-button" onclick="toggleAutoForWatched()"><small>Auto</small><br><span class="auto-status">OFF</span></button>
 					<div class="readouts">
 						<div class="readout"><span class="material-icons">thermostat</span><span><span class="temp">..</span>ºC</span></div>
@@ -47,18 +47,17 @@
 					</div>
 				</div>
 				<div class="log-view">
-					<p>beansbeansbeans</p>
-					<p>beansbeansbeans</p>
-					<p>beansbeansbeans</p>
+					<p>Log viewing is currently unavailable.</p>
 				</div>
 				<div class="bottom-action-bar">
+					<button disabled style="margin-right: 10px"><span class="status-chip" style="justify-content: center;"><span class="material-icons">article</span><span>Full log</span></span></button>
 					<button onclick="openSettingsForCurrentWatch()"><span class="status-chip" style="justify-content: center;"><span class="material-icons">edit</span><span>Edit</span></span></button>
 				</div>
 			</div>
 			<div class="bottom-padding"></div>
 		</article>
 		<article class="page detail-settings off-right" style="display: none;">
-			<div class="coltainer">
+			<div class="coltainer settings">
 				<div class="page-title top-back-layout">
 					<span class="material-icons top-back-icon" onclick="closeAndDiscardSettings()">arrow_back</span>
 					<div class="top-back-stack">
@@ -95,6 +94,50 @@
 			</div>
 			<div class="bottom-padding"></div>
 		</article>
+
+		<article class="page knock off-right" style="display: none;">
+			<div class="coltainer settings">
+				<div class="page-title top-back-layout">
+					<span class="material-icons top-back-icon" onclick="toPageLeft('.page.overview')">arrow_back</span>
+					<div class="top-back-stack">
+						<h1>Advanced operations</h1>
+					</div>
+				</div>
+				<p>Advanced server manipulation operations are available below.</p>
+				<p><span class="status-chip" style="justify-content: center; color: red"><span class="material-icons" style="margin-right: 11px;">warning_amber</span><span><small>This screen is meant for advanced users only. Misuse may lead to data loss. Please refer to manual for more information.</small></span></span></p>
+			
+				<label id="debug-list">
+					
+				</label>
+				<label>
+					<p>Swap positions of two hoop houses</p>
+					<div class="settings-line">
+						<span style="margin: 0px 5px; color: #575757;">Swap </span>
+						<input type="number" id="adv-swap-a" autocomplete="off" min="0" style="width: 5ch;">
+						<span style="margin: 0px 5px; color: #575757;">and</span>
+						<input type="number" id="adv-swap-b" autocomplete="off" min="0" style="width: 5ch;">
+					</div>
+					<div class="bottom-action-bar">
+						<button onclick="ADVsendSwap()"><span class="status-chip" style="justify-content: center;"><span class="material-icons">swap_vertical_circle</span><span>Swap</span></span></button>
+					</div>
+				</label>
+
+				<label>
+					<p>Unregister hoop house</p>
+					<div class="settings-line">
+						<span class="material-icons" style="font-size: 1.6em; color: #575757; margin-right: 4px">delete_outline</span>
+						<input type="number" id="adv-nuke" autocomplete="off" min="0" style="width: 5ch;">
+					</div>
+					<div class="bottom-action-bar">
+						<button onclick="ADVsendUnregister()"><span class="status-chip" style="justify-content: center;"><span class="material-icons">delete_forever</span><span>Unregister</span></span></button>
+					</div>
+				</label>
+
+				<p>This client is version <strong>PRERELEASE 1</strong></p>
+				<p>Questions? <a href="tel:+16043384527">+1 604-338-4527</a></p>
+			</div>
+		</article>
+
 		<section class="connection-status-container">
 			<article class="connection-status coltainer hidden">
 				<!-- <p><span class="status-chip"><span class="material-icons">wifi_off</span><span>You're offline</span></span></p> -->
