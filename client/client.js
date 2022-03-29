@@ -1,6 +1,7 @@
 const {WebSocket, WebSocketServer} = require('ws')
 const { sendTo, decodeFrom } = require('./MessageUtil')
 const sensor = require("node-dht-sensor").promises;
+const Gpio = require('onoff').Gpio;
 const PiCamera = require('pi-camera');
 const fs = require('fs')
 
@@ -72,6 +73,18 @@ var camera = null
 var cameraBusy = false
 
 var doorOpen = false
+
+//#region gpio pins
+const PMWB = new Gpio(22, 'out');
+const BIN1 = new Gpio(17, 'out');
+const BIN2 = new Gpio(27, 'out');
+const STBY = new Gpio(18, 'out');
+
+PMWB.writeSync(1)
+
+closeDoor()
+//#endregion
+
 
 if(save.state=="first"){
 	console.log("We don't have a config or ID, so we cannot act yet. We will now try to register with the server at " + config.websocketURL + " to retreive information.")
@@ -278,8 +291,34 @@ async function getSensorDataAsync() {
 }
 function openDoor(){
 	doorOpen = true
+
+	BIN1.writeSync(1)
+	BIN2.writeSync(0)
+
+	STBY.writeSync(1)
+
+	setTimeout(()=>{
+		STBY.writeSync(0)
+		// BIN1.writeSync(0)
+		// BIN2.writeSync(0)
+	},300)
+	console.log("DOOR OPENING")
 }
 function closeDoor(){
 	doorOpen = false
+
+	BIN1.writeSync(0)
+	BIN2.writeSync(1)
+
+	STBY.writeSync(1)
+
+	setTimeout(()=>{
+		STBY.writeSync(0)
+		// BIN1.writeSync(0)
+		// BIN2.writeSync(0)
+	},2000)
+	console.log("DOOR OPENING")
+
+	console.log("DOOR CLOSING")
 }
 //#endregion
