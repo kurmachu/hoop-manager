@@ -134,6 +134,10 @@ wss.on('connection', function connection(ws) {
 		clients.forEach((client)=>{
 			client.requestRefresh()
 		})
+		newHoophouse.on('changed', ()=>{ //Fix that save bug
+			console.log("Saving houses to disk...")
+			saveHouses()
+		})
 		console.log("Welcomed new hoop house -> "+newID)
 	})
 
