@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/root/hoop-manager/client/
+WorkingDirectory=/root/hoop-manager/server/
 ExecStart=/usr/bin/node /root/hoop-manager/server/server.js
 Restart=on-failure
 
