@@ -214,7 +214,7 @@ function beginCommunication(){
 			watchSyncTimer = -1
 		}
 		ws = null
-		rescheduleSync()
+		rescheduleAll()
 		setTimeout(() => {
 			retryTime = retryTime* 1.2
 			if(retryTime > 30*60*1000){
@@ -260,12 +260,11 @@ function beginCommunication(){
 				save.managementTick = message.managementTickMS
 				if(save.state=="first"){//this is our first sync
 					console.log("Successfully registered. Our ID is " + save.id)
-					beginManagement()
 					setupCamera()
 				}
 				save.state = "ok"
 				saveState()
-				rescheduleSync()
+				rescheduleAll()
 				syncToServer()
 				break;
 		
