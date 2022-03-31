@@ -68,6 +68,7 @@ function saveState() {
 var ws = null
 var retryTime = 10*1000
 var syncTimer = -1
+var managementTimer = -1
 var watchSyncTimer = -1
 var camera = null
 var cameraBusy = false
@@ -92,26 +93,60 @@ if(save.state=="first"){
 }else if(save.state=="ok"){
 	console.log(`Our ID is ${save.id}, Launching services.`)
 	setupCamera()
-	beginManagement()
 	beginCommunication()
+	rescheduleAll()
 }
 
 
-function beginManagement(){
-	console.log("Beginning management.")
-	//TODO management
+function doManagement(){
+	if(save.auto){
+		console.log("[AUTO] Gathering data to attempt management")
+		getSensorDataAsync().then((sensorData)=>{
+			console.log("[AUTO] Got data")
+			console.log(sensorData)
+			if(sensorData.temperature < save.config.mintemp) {
+				console.log("[AUTO] Closing door due to temperature")
+				closeDoor()
+				return
+			}else if(sensorData.temperature > save.config.maxtemp) {
+				console.log("[AUTO] Opening door due to temperature")
+				openDoor()
+				return
+			}else {
+				if(sensorData.humidity>save.config.humidity){
+					console.log("[AUTO] Closing door due to humidity")
+					closeDoor()
+					return
+				}else{
+					console.log("[AUTO] Closing door due to humidity")
+					closeDoor()
+					return
+				}
+			}
+		})
+	}
+	console.log("Auto off, skipping management")
+	
 }
 
-function rescheduleSync(){
-	if(syncTimer > 0){
+function rescheduleAll(){
+	console.log("Rescheduling timers")
+	if(syncTimer >= 0){
 		console.log("Unsheduling sync")
 		clearInterval(syncTimer)
-		syncTimer = 0
+		syncTimer = -1
 	}
 	if(ws != null){
 		console.log(`Sync scheduled for every ${save.syncTime}ms`)
 		syncTimer = setInterval(syncToServer, save.syncTime)
 	}
+	if(managementTimer >= 0){
+		console.log("Unsheduling management")
+		clearInterval(managementTimer)
+		syncTimer = -1
+	}
+	console.log(`Management scheduled for every ${save.managementTick}ms`)
+	managementTimer = setInterval(doManagement, save.managementTick)
 }
 
 function syncToServer(forWatch){
@@ -220,7 +255,7 @@ function beginCommunication(){
 				save.id = message.id
 				save.syncTime = message.syncHousesEveryMS
 				save.syncTimeWatched = message.syncHousesEveryWatchedMS
-				save.syncTimeOffline = message.offlineRecordTempEveryMS
+				save.managementTick = message.managementTickMS
 				if(save.state=="first"){//this is our first sync
 					console.log("Successfully registered. Our ID is " + save.id)
 					beginManagement()

@@ -123,7 +123,14 @@ module.exports = class ClientSocket extends EventEmitter {
 
 	syncToClient() {
 		if(this.ws!=null){
-			sendTo(this.ws,{type:"sync", auto: this.auto, config: this.config, id: this.id, syncHousesEveryMS: this.serverConfig.syncHousesEveryMS, syncHousesEveryWatchedMS: this.serverConfig.syncHousesEveryWatchedMS, offlineRecordTempEveryMS: this.serverConfig.offlineRecordTempEveryMS},this.key)
+			sendTo(this.ws,{type:"sync",
+			auto: this.auto,
+			config: this.config,
+			id: this.id,
+			syncHousesEveryMS: this.serverConfig.syncHousesEveryMS,
+			syncHousesEveryWatchedMS: this.serverConfig.syncHousesEveryWatchedMS,
+			offlineRecordTempEveryMS: this.serverConfig.offlineRecordTempEveryMS,
+			managementTickMS: this.serverConfig.managementTickMS},this.key)
 		}
 	}
 

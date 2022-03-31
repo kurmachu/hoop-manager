@@ -14,7 +14,7 @@ const defaultConfig = {
 	key: false,
 	syncHousesEveryMS: 60000,
 	syncHousesEveryWatchedMS: 5000,
-	offlineRecordTempEveryMS: 20*60*1000,
+	managementTickMS: 60*1000,
 }
 var config = defaultConfig
 if (fs.existsSync('server-config.json')) {
