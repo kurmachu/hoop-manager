@@ -75,6 +75,7 @@ module.exports = class ClientSocket extends EventEmitter {
 					let h = this.hoopHouses[message.index]
 					h.auto = !h.auto
 					h.notifyChanged()
+					h.syncToClient()
 					// sendTo(this.ws,{type:"done"},this.key)
 				}catch(e){
 					console.error("Failed to toggle hoop house auto")
