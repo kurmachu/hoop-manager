@@ -82,7 +82,9 @@ const STBY = new Gpio(18, 'out');
 
 PMWB.writeSync(1)
 
-closeDoor()
+setTimeout(()=>{
+	closeDoor()
+},1000)
 //#endregion
 
 
@@ -301,7 +303,7 @@ function openDoor(){
 		STBY.writeSync(0)
 		// BIN1.writeSync(0)
 		// BIN2.writeSync(0)
-	},300)
+	},075)
 	console.log("DOOR OPENING")
 }
 function closeDoor(){
@@ -316,9 +318,7 @@ function closeDoor(){
 		STBY.writeSync(0)
 		// BIN1.writeSync(0)
 		// BIN2.writeSync(0)
-	},2000)
-	console.log("DOOR OPENING")
-
+	},3000)
 	console.log("DOOR CLOSING")
 }
 //#endregion
