@@ -106,6 +106,7 @@ function doManagement(){
 		getSensorDataAsync().then((sensorData)=>{
 			console.log("[AUTO] Got data")
 			console.log(sensorData)
+			console.log(save.config)
 			if(sensorData.temperature < save.config.mintemp) {
 				console.log("[AUTO] Closing door due to temperature")
 				closeDoor()
@@ -326,6 +327,9 @@ async function getSensorDataAsync() {
 	// return {temperature: 10, humidity: 10}
 }
 function openDoor(){
+	if(doorOpen==true){
+		return
+	}
 	doorOpen = true
 
 	BIN1.writeSync(1)
@@ -341,6 +345,9 @@ function openDoor(){
 	console.log("DOOR OPENING")
 }
 function closeDoor(){
+	if(doorOpen==false){
+		return
+	}
 	doorOpen = false
 
 	BIN1.writeSync(0)
