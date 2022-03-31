@@ -116,8 +116,8 @@ function doManagement(){
 				return
 			}else {
 				if(sensorData.humidity>save.config.humidity){
-					console.log("[AUTO] Closing door due to humidity")
-					closeDoor()
+					console.log("[AUTO] Opening door due to humidity")
+					openDoor()
 					return
 				}else{
 					console.log("[AUTO] Closing door due to humidity")
