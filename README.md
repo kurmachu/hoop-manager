@@ -20,6 +20,7 @@ These instructions cover only the setup of the backend server. Client instructio
    ```
    cd /root
    sudo apt-get install -y git
+   git clone https://github.com/kurmachu/hoop-manager.git
    ```
 4. Set up the server service and dependancies:
    ```
