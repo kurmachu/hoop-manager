@@ -73,7 +73,7 @@ if (fs.existsSync('./save/houses.json')) {
 	} catch (error) {
 		console.error("EXCEPTION THROWN WHILE LOADING HOOP HOUSES! THIS IS VERY BAD!")
 		console.error(error.stack)
-		console.error("This error is unreconverable; possible data corruption. Consult manual immediately.")
+		console.error("This error is unrecoverable; possible data corruption. Consult manual immediately.")
 		process.exit(1)
 	}
 }else{

@@ -304,7 +304,7 @@ function handleInitialKick(info){
 	console.warn(info)
 	if(info.code == 4002){
 		if(info.reason == "Failed to identify"){
-			setConnectionStatusDisplay(inflateChip("block","Server has rejected this client due to a protocal issue. Ensure you are on the latest version, or refer to manual.").css("white-space","initial"), true)
+			setConnectionStatusDisplay(inflateChip("block","Server has rejected this client due to a protocol issue. Ensure you are on the latest version, or refer to manual.").css("white-space","initial"), true)
 		}else if(info.reason == "Lol, what?"){
 			setConnectionStatusDisplay(inflateChip("block","Failed to understand the server. Refer to manual.").css("white-space","initial"), true)
 		}
