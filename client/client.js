@@ -68,6 +68,7 @@ function saveState() {
 var ws = null
 var retryTime = 10*1000
 var syncTimer = -1
+var managementTimer = -1
 var watchSyncTimer = -1
 var camera = null
 var cameraBusy = false
@@ -82,7 +83,9 @@ const STBY = new Gpio(18, 'out');
 
 PMWB.writeSync(1)
 
-closeDoor()
+setTimeout(()=>{
+	closeDoor()
+},1000)
 //#endregion
 
 
@@ -92,26 +95,61 @@ if(save.state=="first"){
 }else if(save.state=="ok"){
 	console.log(`Our ID is ${save.id}, Launching services.`)
 	setupCamera()
-	beginManagement()
 	beginCommunication()
+	rescheduleAll()
 }
 
 
-function beginManagement(){
-	console.log("Beginning management.")
-	//TODO management
+function doManagement(){
+	if(save.auto){
+		console.log("[AUTO] Gathering data to attempt management")
+		getSensorDataAsync().then((sensorData)=>{
+			console.log("[AUTO] Got data")
+			console.log(sensorData)
+			console.log(save.config)
+			if(sensorData.temperature < save.config.mintemp) {
+				console.log("[AUTO] Closing door due to temperature")
+				closeDoor()
+				return
+			}else if(sensorData.temperature > save.config.maxtemp) {
+				console.log("[AUTO] Opening door due to temperature")
+				openDoor()
+				return
+			}else {
+				if(sensorData.humidity>save.config.targethumid){
+					console.log("[AUTO] Opening door due to humidity")
+					openDoor()
+					return
+				}else{
+					console.log("[AUTO] Closing door due to humidity")
+					closeDoor()
+					return
+				}
+			}
+		})
+	}
+	console.log("Auto off, skipping management")
+	
 }
 
-function rescheduleSync(){
-	if(syncTimer > 0){
+function rescheduleAll(){
+	console.log("Rescheduling timers")
+	if(syncTimer >= 0){
 		console.log("Unsheduling sync")
 		clearInterval(syncTimer)
-		syncTimer = 0
+		syncTimer = -1
 	}
 	if(ws != null){
 		console.log(`Sync scheduled for every ${save.syncTime}ms`)
 		syncTimer = setInterval(syncToServer, save.syncTime)
 	}
+	if(managementTimer >= 0){
+		console.log("Unsheduling management")
+		clearInterval(managementTimer)
+		syncTimer = -1
+	}
+	console.log(`Management scheduled for every ${save.managementTick}ms`)
+	managementTimer = setInterval(doManagement, save.managementTick)
 }
 
 function syncToServer(forWatch){
@@ -177,7 +215,7 @@ function beginCommunication(){
 			watchSyncTimer = -1
 		}
 		ws = null
-		rescheduleSync()
+		rescheduleAll()
 		setTimeout(() => {
 			retryTime = retryTime* 1.2
 			if(retryTime > 30*60*1000){
@@ -220,15 +258,14 @@ function beginCommunication(){
 				save.id = message.id
 				save.syncTime = message.syncHousesEveryMS
 				save.syncTimeWatched = message.syncHousesEveryWatchedMS
-				save.syncTimeOffline = message.offlineRecordTempEveryMS
+				save.managementTick = message.managementTickMS
 				if(save.state=="first"){//this is our first sync
 					console.log("Successfully registered. Our ID is " + save.id)
-					beginManagement()
 					setupCamera()
 				}
 				save.state = "ok"
 				saveState()
-				rescheduleSync()
+				rescheduleAll()
 				syncToServer()
 				break;
 		
@@ -290,6 +327,9 @@ async function getSensorDataAsync() {
 	// return {temperature: 10, humidity: 10}
 }
 function openDoor(){
+	if(doorOpen==true){
+		return
+	}
 	doorOpen = true
 
 	BIN1.writeSync(1)
@@ -301,10 +341,13 @@ function openDoor(){
 		STBY.writeSync(0)
 		// BIN1.writeSync(0)
 		// BIN2.writeSync(0)
-	},300)
+	},075)
 	console.log("DOOR OPENING")
 }
 function closeDoor(){
+	if(doorOpen==false){
+		return
+	}
 	doorOpen = false
 
 	BIN1.writeSync(0)
@@ -316,9 +359,7 @@ function closeDoor(){
 		STBY.writeSync(0)
 		// BIN1.writeSync(0)
 		// BIN2.writeSync(0)
-	},2000)
-	console.log("DOOR OPENING")
-
+	},3000)
 	console.log("DOOR CLOSING")
 }
 //#endregion
